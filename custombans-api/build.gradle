@@ -1,0 +1,21 @@
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+dependencies {
+    compile 'com.google.guava:guava:17.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'src/legacy/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+build.dependsOn(shadowJar)

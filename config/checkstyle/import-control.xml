@@ -1,0 +1,32 @@
+<!DOCTYPE import-control PUBLIC
+        "-//Puppy Crawl//DTD Import Control 1.1//EN"
+        "http://www.puppycrawl.com/dtds/import_control_1_1.dtd">
+
+<import-control pkg="me.catcoder">
+    <allow pkg="java"/>
+    <allow pkg="javax"/>
+    <allow pkg="org.junit"/>
+    <allow pkg="org.hamcrest"/>
+    <allow pkg="org.mockito"/>
+    <allow pkg="me.catcoder"/>
+    <allow pkg="com.google.common"/>
+    <allow pkg="com.thoughtworks.paranamer"/>
+    <allow pkg="gnu.trove"/>
+    <allow pkg="com.google.gson"/>
+    <allow pkg="net.royawesome.jlibnoise"/>
+
+    <subpackage name="bukkit">
+        <allow pkg="org.bukkit"/>
+    </subpackage>
+
+
+    <subpackage name="bukkit">
+        <allow pkg="org.bukkit"/>
+        <allow pkg="net.minecraft.server"/>
+    </subpackage>
+
+    <subpackage name="bungee">
+        <allow pkg="net.md_5.bungee"/>
+    </subpackage>
+
+</import-control>
