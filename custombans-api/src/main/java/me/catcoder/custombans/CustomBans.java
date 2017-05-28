@@ -1,10 +1,8 @@
 package me.catcoder.custombans;
 
-import static com.google.common.base.Preconditions.*;
-
+import com.sk89q.minecraft.util.commands.CommandsManager;
 import lombok.Getter;
 import lombok.experimental.Builder;
-import me.catcoder.custombans.command.utility.CommandExecutor;
 import me.catcoder.custombans.config.Configuration;
 import me.catcoder.custombans.config.ConfigurationLoader;
 import me.catcoder.custombans.database.*;
@@ -17,6 +15,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Created by Ruslan on 25.04.2017.
  */
@@ -27,7 +27,7 @@ public class CustomBans {
     private static CustomBans instance;
     private final ConfigurationLoader configurationLoader = new ConfigurationLoader();
 
-    private final CommandExecutor commandExecutor;
+    private final CommandsManager commandExecutor;
     private final Limiter limiter;
     private final File workingDirectory;
     private final Logger logger;
@@ -38,7 +38,7 @@ public class CustomBans {
     private final Database database;
 
     @Builder
-    public CustomBans(CommandExecutor commandExecutor,
+    public CustomBans(CommandsManager commandExecutor,
                       Limiter limiter,
                       File workingDirectory,
                       Logger logger,

@@ -19,7 +19,7 @@ public class LimitInfo {
         return result == Result.ALLOWED;
     }
 
-    private static enum Result {
+    public static enum Result {
         ALLOWED, DISALLOWED
     }
 }

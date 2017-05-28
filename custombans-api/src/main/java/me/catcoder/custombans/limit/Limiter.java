@@ -1,7 +1,7 @@
 package me.catcoder.custombans.limit;
 
+import com.sk89q.minecraft.util.commands.CommandLocals;
 import me.catcoder.custombans.actor.Actor;
-import me.catcoder.custombans.command.utility.CommandLocals;
 import me.catcoder.custombans.punishment.ActionType;
 
 /**

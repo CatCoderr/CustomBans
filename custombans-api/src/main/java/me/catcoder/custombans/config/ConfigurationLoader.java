@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created by CatCoder on 28.05.2017.
+ * @author md_5
  */
 public class ConfigurationLoader {
 

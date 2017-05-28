@@ -6,11 +6,15 @@ import me.catcoder.custombans.config.Configuration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by CatCoder on 28.05.2017.
  */
 public class Language {
+
+    public static final Pattern PLACEHOLDER_MATCH = Pattern.compile("\\{([^\\}]+)\\}");
 
     private Configuration configuration;
     private final CustomBans plugin;
@@ -27,11 +31,20 @@ public class Language {
     }
 
     public String translate(String path, Map<String, String> variables) {
-        String message = ColorFormat.translateAlternateColorCodes('&', this.configuration.getString(path));
-
-        for (Map.Entry<String, String> entry : variables.entrySet()) {
-            message = message.replace("{" + entry.getKey() + "}", entry.getValue());
+        if (this.configuration.getString(path) == null) {
+            return "Message not found at path: " + path;
         }
-        return message == null ? "Message not found in path " + path : message;
+        String message = ColorFormat.translateAlternateColorCodes('&', this.configuration.getString(path));
+        Matcher matcher = PLACEHOLDER_MATCH.matcher(message);
+        StringBuffer output = new StringBuffer();
+
+        while (matcher.find()) {
+            String variable = matcher.group(1);
+            String replacement = variables.get(variable.toLowerCase());
+            if (replacement != null) {
+                matcher.appendReplacement(output, Matcher.quoteReplacement(replacement));
+            }
+        }
+        return output.toString();
     }
 }

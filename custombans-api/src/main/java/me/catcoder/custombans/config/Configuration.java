@@ -1,7 +1,7 @@
 package me.catcoder.custombans.config;
 
 /**
- * Created by CatCoder on 28.05.2017.
+ * @author md_5
  */
 
 import com.google.common.collect.Sets;
