@@ -1,5 +1,8 @@
 package me.catcoder.custombans.punishment;
 
+import me.catcoder.custombans.language.MessageFormatter;
+import me.catcoder.custombans.utility.TimeUtility;
+
 import java.util.UUID;
 
 /**
@@ -22,5 +25,14 @@ public class TempMute extends Mute implements Temporary {
     @Override
     public boolean hasExpired() {
         return System.currentTimeMillis() > expires;
+    }
+
+    @Override
+    public String getMessage() {
+        return MessageFormatter.create()
+                .addVariable("banner", getBanner())
+                .addVariable("reason", getReason())
+                .addVariable("unit", TimeUtility.timeUntilNow(getExpires(), true))
+                .format("formats.tempmute_format");
     }
 }

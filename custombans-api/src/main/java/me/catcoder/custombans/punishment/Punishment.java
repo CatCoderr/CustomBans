@@ -18,4 +18,5 @@ public abstract class Punishment {
     private final UUID uniqueId;
     private final String banner;
 
+    public abstract String getMessage();
 }

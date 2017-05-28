@@ -1,5 +1,7 @@
 package me.catcoder.custombans.punishment;
 
+import me.catcoder.custombans.language.MessageFormatter;
+
 import java.util.UUID;
 
 /**
@@ -10,4 +12,14 @@ public class Mute extends Punishment {
     public Mute(String reason, UUID uniqueId, String banner) {
         super(reason, uniqueId, banner);
     }
+
+    @Override
+    public String getMessage() {
+        return MessageFormatter.create()
+                .addVariable("banner", getBanner())
+                .addVariable("reason", getReason())
+                .format("formats.mute_format");
+    }
+
+
 }

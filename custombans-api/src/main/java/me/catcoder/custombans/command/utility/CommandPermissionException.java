@@ -1,4 +1,4 @@
-package me.catcoder.custombans.command;
+package me.catcoder.custombans.command.utility;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -16,7 +16,7 @@ subprojects {
         maven { url "http://repo.md-5.net/content/groups/public/" }
         maven { url "http://repo.maven.apache.org/maven2" }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/"}
+        maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
     }
 
     dependencies {
@@ -25,7 +25,7 @@ subprojects {
 }
 
 
-task allJar( type: Jar, dependsOn: subprojects.tasks["build"]) {
+task allJar(type: Jar, dependsOn: subprojects.tasks["build"] ) {
     subprojects.each { subproject ->
         baseName = "CustomBans"
         from subproject.configurations.archives.allArtifacts.files.collect {
