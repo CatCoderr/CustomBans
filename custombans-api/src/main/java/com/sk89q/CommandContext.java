@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
 import java.util.ArrayList;
 import java.util.Collections;

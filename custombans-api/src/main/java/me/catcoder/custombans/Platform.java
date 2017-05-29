@@ -5,5 +5,6 @@ package me.catcoder.custombans;
  */
 public enum Platform {
 
-    BUNGEE, BUKKIT
+    BUNGEE, //https://github.com/SpigotMC/BungeeCord
+    BUKKIT //https://www.spigotmc.org/ or https://bukkit.org/
 }

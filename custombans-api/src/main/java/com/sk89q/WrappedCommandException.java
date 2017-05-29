@@ -17,11 +17,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-/**
- * Thrown when not enough permissions are satisfied.
- */
-public class CommandPermissionsException extends CommandException {
+public class WrappedCommandException extends CommandException {
+
+    public WrappedCommandException(Throwable t) {
+        super(t);
+    }
 
 }

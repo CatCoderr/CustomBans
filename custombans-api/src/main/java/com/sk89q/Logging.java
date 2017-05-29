@@ -17,23 +17,52 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+//$Id$
+
+
+package com.sk89q;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Indicates a list of permissions that should be checked.
+ * Indicates how the affected blocks should be hinted at in the log.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandPermissions {
+public @interface Logging {
+
+    public enum LogMode {
+        /**
+         * Player position
+         */
+        POSITION,
+
+        /**
+         * Region selection
+         */
+        REGION,
+
+        /**
+         * Player orientation and region selection
+         */
+        ORIENTATION_REGION,
+
+        /**
+         * Either the player position or pos1, depending on the placeAtPos1 flag
+         */
+        PLACEMENT,
+
+        /**
+         * Log all information available
+         */
+        ALL
+    }
 
     /**
-     * A list of permissions. Only one permission has to be met
-     * for the command to be permitted.
+     * Log mode.
      *
-     * @return a list of permissions strings
+     * @return either POSITION, REGION, ORIENTATION_REGION, PLACEMENT or ALL
      */
-    String[] value();
+    LogMode value();
 
 }

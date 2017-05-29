@@ -17,12 +17,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-public class MissingNestedCommandException extends CommandUsageException {
-
-    public MissingNestedCommandException(String message, String usage) {
-        super(message, usage);
-    }
+/**
+ * Thrown when not enough permissions are satisfied.
+ */
+public class CommandPermissionsException extends CommandException {
 
 }

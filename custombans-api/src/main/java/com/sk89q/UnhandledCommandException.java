@@ -17,12 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-public class WrappedCommandException extends CommandException {
-
-    public WrappedCommandException(Throwable t) {
-        super(t);
-    }
+public class UnhandledCommandException extends CommandException {
 
 }

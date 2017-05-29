@@ -17,34 +17,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
-public class CommandLocals {
-    
-    private final Map<Object, Object> locals = new HashMap<Object, Object>();
+/**
+ * Constructs new instances.
+ */
+public interface Injector {
 
-    public boolean containsKey(Object key) {
-        return locals.containsKey(key);
-    }
-
-    public boolean containsValue(Object value) {
-        return locals.containsValue(value);
-    }
-
-    public Object get(Object key) {
-        return locals.get(key);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T get(Class<T> key) {
-        return (T) locals.get(key);
-    }
-
-    public Object put(Object key, Object value) {
-        return locals.put(key, value);
-    }
+    /**
+     * Constructs a new instance of the given class.
+     * 
+     * @param cls class
+     * @return object
+     * @throws IllegalAccessException thrown on injection fault
+     * @throws InstantiationException thrown on injection fault
+     * @throws InvocationTargetException thrown on injection fault
+     */
+    public Object getInstance(Class<?> cls) throws InvocationTargetException, IllegalAccessException, InstantiationException;
 
 }

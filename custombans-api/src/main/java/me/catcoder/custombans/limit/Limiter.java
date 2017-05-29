@@ -1,6 +1,6 @@
 package me.catcoder.custombans.limit;
 
-import com.sk89q.minecraft.util.commands.CommandLocals;
+import com.sk89q.CommandLocals;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.punishment.ActionType;
 
@@ -9,6 +9,6 @@ import me.catcoder.custombans.punishment.ActionType;
  */
 public interface Limiter {
 
-    void checkLimit(Actor sender, ActionType type, int time, CommandLocals locals);
+    void checkLimit(Actor sender, ActionType type, CommandLocals locals);
 
 }

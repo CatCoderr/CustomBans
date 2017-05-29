@@ -17,11 +17,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
 
-import me.catcoder.custombans.CustomBans;
-import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.utility.StringUtil;
 
@@ -61,10 +59,10 @@ import java.util.logging.Logger;
  * allows for fast command handling. Method invocation still has to be done
  * with reflection, but this is quite fast in that of itself.</p>
  *
- * @param  command sender class
+ * @param <T> command sender class
  */
 @SuppressWarnings("ProtectedField")
-public abstract class CommandsManager {
+public abstract class CommandsManager<T> {
 
     protected static final Logger logger =
             Logger.getLogger(CommandsManager.class.getCanonicalName());
@@ -349,7 +347,7 @@ public abstract class CommandsManager {
      * @return the usage string
      * @throws CommandException on some error
      */
-    protected String getNestedUsage(String[] args, int level, Method method, Actor player) throws CommandException {
+    protected String getNestedUsage(String[] args, int level, Method method, T player) throws CommandException {
         StringBuilder command = new StringBuilder();
 
         command.append("/");
@@ -402,7 +400,7 @@ public abstract class CommandsManager {
      * @param methodArgs method arguments
      * @throws CommandException thrown when the command throws an error
      */
-    public void execute(String cmd, String[] args, Actor player, Object... methodArgs) throws CommandException {
+    public void execute(String cmd, String[] args, T player, Object... methodArgs) throws CommandException {
 
         String[] newArgs = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
@@ -421,7 +419,7 @@ public abstract class CommandsManager {
      * @param methodArgs the arguments for the method
      * @throws CommandException thrown on command error
      */
-    public void execute(String[] args, Actor player, Object... methodArgs) throws CommandException {
+    public void execute(String[] args, T player, Object... methodArgs) throws CommandException {
         Object[] newMethodArgs = new Object[methodArgs.length + 1];
         System.arraycopy(methodArgs, 0, newMethodArgs, 1, methodArgs.length);
         executeMethod(null, args, player, newMethodArgs, 0);
@@ -437,7 +435,7 @@ public abstract class CommandsManager {
      * @param level      the depth of the command
      * @throws CommandException thrown on a command error
      */
-    public void executeMethod(Method parent, String[] args, Actor player, Object[] methodArgs, int level) throws CommandException {
+    public void executeMethod(Method parent, String[] args, T player, Object[] methodArgs, int level) throws CommandException {
         String cmdName = args[level];
 
         Map<String, Method> map = commands.get(parent);
@@ -513,14 +511,10 @@ public abstract class CommandsManager {
                 }
             }
 
-            //CustomBans edit start
             if (method.isAnnotationPresent(LimitedCommand.class)) {
-                LimitedCommand limitedCommand = method.getAnnotation(LimitedCommand.class);
-                ActionType type = limitedCommand.type();
-                int time = context.getInteger(context.argsLength() - 1);
-                CustomBans.getInstance().getLimiter().checkLimit(player, type, time, context.getLocals());
+                LimitedCommand command = method.getAnnotation(LimitedCommand.class);
+                checkLimit(player, command.type(), context.getLocals());
             }
-            //CustomBans edit end
 
             methodArgs[0] = context;
 
@@ -530,13 +524,13 @@ public abstract class CommandsManager {
         }
     }
 
-    protected void checkPermission(Actor player, Method method) throws CommandException {
+    protected void checkPermission(T player, Method method) throws CommandException {
         if (!hasPermission(method, player)) {
             throw new CommandPermissionsException();
         }
     }
 
-    public void invokeMethod(Method parent, String[] args, Actor player, Method method, Object instance, Object[] methodArgs, int level) throws CommandException {
+    public void invokeMethod(Method parent, String[] args, T player, Method method, Object instance, Object[] methodArgs, int level) throws CommandException {
         try {
             method.invoke(instance, methodArgs);
         } catch (IllegalArgumentException e) {
@@ -559,7 +553,7 @@ public abstract class CommandsManager {
      * @param player the player
      * @return true if permission is granted
      */
-    protected boolean hasPermission(Method method, Actor player) {
+    protected boolean hasPermission(Method method, T player) {
         CommandPermissions perms = method.getAnnotation(CommandPermissions.class);
         if (perms == null) {
             return true;
@@ -581,9 +575,9 @@ public abstract class CommandsManager {
      * @param permission the permission
      * @return true if permission is granted
      */
-    public boolean hasPermission(Actor player, String permission){
-        return player.hasPermission(permission);
-    }
+    public abstract boolean hasPermission(T player, String permission);
+
+    public abstract void checkLimit(T player, ActionType type, CommandLocals locals);
 
     /**
      * Get the injector used to create new instances. This can be

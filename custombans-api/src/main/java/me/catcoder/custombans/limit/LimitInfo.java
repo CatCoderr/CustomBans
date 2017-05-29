@@ -1,23 +1,21 @@
 package me.catcoder.custombans.limit;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import me.catcoder.custombans.punishment.ActionType;
+import me.catcoder.custombans.actor.Actor;
 
 /**
  * Created by CatCoder on 28.05.2017.
  */
-@AllArgsConstructor
-@Getter
-public class LimitInfo {
 
-    private Result result;
-    private String disallowMessage;
-    private ActionType type;
+public interface LimitInfo {
 
-    public boolean allowed() {
-        return result == Result.ALLOWED;
-    }
+
+    Result getResult();
+
+    boolean allowed();
+
+    String getDisallowMessage();
+
+    boolean canAccess(int time, Actor actor);
 
     public static enum Result {
         ALLOWED, DISALLOWED

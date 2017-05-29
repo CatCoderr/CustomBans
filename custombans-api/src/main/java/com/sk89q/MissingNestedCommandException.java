@@ -17,18 +17,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-public class CommandUsageException extends CommandException {
+public class MissingNestedCommandException extends CommandUsageException {
 
-    protected String usage;
-
-    public CommandUsageException(String message, String usage) {
-        super(message);
-        this.usage = usage;
+    public MissingNestedCommandException(String message, String usage) {
+        super(message, usage);
     }
 
-    public String getUsage() {
-        return usage;
-    }
 }

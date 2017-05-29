@@ -17,24 +17,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Any command with this annotation will run the raw command as shown in the
- * thing, as long as it is registered in the current {@link CommandsManager}.
- * Mostly to move commands around without breaking things.
+ * This annotation indicates that a command can be used from the console.
  */
-
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandAlias {
+public @interface Console {
 
-    /**
-     * Get the raw {@link CommandsManager}-formatted command arg array to run
-     *
-     * @return the command
-     */
-    String[] value();
 }

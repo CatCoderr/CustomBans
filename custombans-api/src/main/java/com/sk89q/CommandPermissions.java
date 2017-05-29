@@ -17,24 +17,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Constructs new instances.
+ * Indicates a list of permissions that should be checked.
  */
-public interface Injector {
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CommandPermissions {
 
     /**
-     * Constructs a new instance of the given class.
-     * 
-     * @param cls class
-     * @return object
-     * @throws IllegalAccessException thrown on injection fault
-     * @throws InstantiationException thrown on injection fault
-     * @throws InvocationTargetException thrown on injection fault
+     * A list of permissions. Only one permission has to be met
+     * for the command to be permitted.
+     *
+     * @return a list of permissions strings
      */
-    public Object getInstance(Class<?> cls) throws InvocationTargetException, IllegalAccessException, InstantiationException;
+    String[] value();
 
 }

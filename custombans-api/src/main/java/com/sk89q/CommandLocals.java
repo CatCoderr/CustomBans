@@ -17,15 +17,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sk89q.minecraft.util.commands;
+package com.sk89q;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * This annotation indicates that a command can be used from the console.
- */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Console {
+public class CommandLocals {
+    
+    private final Map<Object, Object> locals = new HashMap<Object, Object>();
+
+    public boolean containsKey(Object key) {
+        return locals.containsKey(key);
+    }
+
+    public boolean containsValue(Object value) {
+        return locals.containsValue(value);
+    }
+
+    public Object get(Object key) {
+        return locals.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(Class<T> key) {
+        return (T) locals.get(key);
+    }
+
+    public Object put(Object key, Object value) {
+        return locals.put(key, value);
+    }
 
 }
