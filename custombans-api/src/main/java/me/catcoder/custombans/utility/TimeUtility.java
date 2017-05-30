@@ -1,8 +1,13 @@
 package me.catcoder.custombans.utility;
 
+import com.sk89q.CommandContext;
+import com.sk89q.CommandException;
+import me.catcoder.custombans.actor.Actor;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,15 +95,19 @@ public class TimeUtility {
         return new Date(first.getTime() + toAdd.getTime());
     }
 
-    public static String timeUntilNow(Date until, boolean dateIsPassed) {
+    public static String timeUnitNow(Date until) {
+        return getTime(new Date(new Date().getTime() - until.getTime()), false);
+    }
+
+    public static String getTime(Date time, boolean dateIsPassed) {
         String ret = "";
-        if (until.equals(new Date(0))) {
+        if (time.equals(new Date(0))) {
             return "forever";
         }
-        if (until.equals(new Date())) {
+        if (time.equals(new Date())) {
             return "now";
         }
-        long secondsBetween = (long) Math.ceil(((until.getTime() - new Date().getTime()) / 1000));
+        long secondsBetween = (long) Math.ceil(((time.getTime()) / 1000));
         if (secondsBetween < 0) {
             secondsBetween *= -1L;
             if (!dateIsPassed) {
@@ -146,7 +155,31 @@ public class TimeUtility {
         return ret;
     }
 
-    public static String timeUntilNow(long epoch, boolean dateIsPassed) {
-        return timeUntilNow(new Date(epoch), dateIsPassed);
+    public static long parseTime(CommandContext context) throws CommandException {
+        if (context.argsLength() < 3) throw new CommandException("Time is not specified.");
+        int time = context.getInteger(1);
+        TimeUnit unit = getFromModifier(context.getString(2));
+
+        if (unit == null) throw new CommandException("Unknown time modifier: " + context.getString(2));
+
+        return System.currentTimeMillis() + unit.toMillis(time);
+    }
+
+    private static TimeUnit getFromModifier(String modifier) {
+        switch (modifier.toLowerCase()) {
+            case "hour":
+                return TimeUnit.HOURS;
+            case "day":
+                return TimeUnit.DAYS;
+            case "min":
+                return TimeUnit.MINUTES;
+            case "sec":
+                return TimeUnit.SECONDS;
+        }
+        return null;
+    }
+
+    public static String timeUntilNow(long epoch) {
+        return timeUnitNow(new Date(epoch));
     }
 }

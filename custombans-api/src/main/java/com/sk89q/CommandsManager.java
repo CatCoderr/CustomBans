@@ -149,6 +149,8 @@ public abstract class CommandsManager<T> {
             logger.log(Level.SEVERE, "Failed to register commands", e);
         } catch (InstantiationException e) {
             logger.log(Level.SEVERE, "Failed to register commands", e);
+        } catch (NoSuchMethodException e) {
+            logger.log(Level.SEVERE, "Failed to register commands", e);
         }
         return null;
     }

@@ -23,6 +23,17 @@ public interface BanManager {
     void ban(Actor target, Actor banner, String reason, PunishParameters parameters);
 
     /**
+     * Temporary bans player.
+     *
+     * @param target     - target player.
+     * @param banner     - banner.
+     * @param reason     - ban reason.
+     * @param parameters - additional parameters (can be null).
+     * @param time       - expires.
+     */
+    void tempban(Actor target, Actor banner, String reason, long time, PunishParameters parameters);
+
+    /**
      * Unbans player.
      *
      * @param actor      - target player.
@@ -39,6 +50,17 @@ public interface BanManager {
      * @param parameters - additional parameters (can be null).
      */
     void mute(Actor target, Actor banner, String reason, PunishParameters parameters);
+
+    /**
+     * Temporary mutes player.
+     *
+     * @param target     - target player.
+     * @param banner     - banner.
+     * @param reason     - mute reason.
+     * @param parameters - additional parameters (can be null).
+     * @param time       - expires.
+     */
+    void tempmute(Actor target, Actor banner, String reason, long time, PunishParameters parameters);
 
     /**
      * Unmutes player.

@@ -18,6 +18,8 @@ import me.catcoder.custombans.storage.PunishmentStorage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,8 +30,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author CatCoder
  */
-@Getter
-public abstract class CustomBans {
+public class CustomBans {
 
     /**
      * Plugin instance.
@@ -39,53 +40,70 @@ public abstract class CustomBans {
     /**
      * Manager for bans/mutes manipulation.
      */
+    @Getter
     private final BanManager banManager;
     /**
      * YAML configuration loader.
      */
+    @Getter
     private final ConfigurationLoader configurationLoader = new ConfigurationLoader();
 
     /**
      * Manager for commands manipulation.
      */
+    @Getter
     private final CommandsManager commandExecutor;
     /**
      * Limits checker (tempban, ban, etc.).
      */
+    @Getter
     private final Limiter limiter;
     /**
      * Plugin folder.
      */
+    @Getter
     private final File workingDirectory;
     /**
      * Plugin logger.
      */
+    @Getter
     private final Logger logger;
     /**
      * Plugin platform.
      * Supports: BungeeCord, Bukkit (Spigot).
      */
+    @Getter
     private final Platform platform;
     /**
      * Language file.
      */
+    @Getter
     private final Language language;
     /**
      * The main plugin configuration (config.yml).
      */
+    @Getter
     private final Configuration pluginConfiguration;
     /**
      * Database store (bans, mutes)
      */
+    @Getter
     private final Database database;
     /**
      * Punisments storage.
      */
+    @Getter
     private final PunishmentStorage storage;
     /**
      * Plugin version.
      */
+    @Getter
     private final String version;
+
+    //Other fields
+    private final Function<String, Actor> actorFunction;
+    private final Consumer<ReloadIntent> reloader;
+
 
     /**
      * Constructs plugin instance.
@@ -106,6 +124,8 @@ public abstract class CustomBans {
             Logger logger,
             Platform platform,
             BanManager banManager,
+            Function<String, Actor> actorFunction,
+            Consumer<ReloadIntent> reloader,
             String version)
             throws
             IOException,
@@ -122,6 +142,8 @@ public abstract class CustomBans {
         this.limiter = limiter;
         this.platform = platform;
         this.version = version;
+        this.actorFunction = actorFunction;
+        this.reloader = reloader;
 
         this.workingDirectory = workingDirectory;
         this.banManager = banManager;
@@ -201,12 +223,16 @@ public abstract class CustomBans {
      * @param name - name of actor.
      * @return Actor
      */
-    public abstract Actor getActor(String name);
+    public Actor getActor(String name) {
+        return actorFunction.apply(name);
+    }
 
     /**
      * Reload plugin.
      */
-    public abstract boolean reload(ReloadIntent intent);
+    public void reload(ReloadIntent intent) {
+        reloader.accept(intent);
+    }
 
     /**
      * Nulling plugin instance.

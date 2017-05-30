@@ -19,7 +19,6 @@
 
 package com.sk89q;
 
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,7 @@ public class CommandException extends Exception {
      * @param spacedSuffix a suffix to put at the end (optional) -- may be null
      * @return the command that was used
      */
-    public String getCommandUsed(String prefix, @Nullable String spacedSuffix) {
+    public String getCommandUsed(String prefix, String spacedSuffix) {
         checkNotNull(prefix);
         StringBuilder builder = new StringBuilder();
         if (prefix != null) {
