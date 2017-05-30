@@ -2,7 +2,6 @@ package me.catcoder.custombans;
 
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.punishment.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -19,17 +18,17 @@ public interface BanManager {
      * @param target     - target player.
      * @param banner     - banner.
      * @param reason     - ban reason.
-     * @param parameters - parameters.
+     * @param parameters - additional parameters (can be null).
      */
-    void ban(Actor target, Actor banner, String reason, @Nullable PunishParameters parameters);
+    void ban(Actor target, Actor banner, String reason, PunishParameters parameters);
 
     /**
      * Unbans player.
      *
      * @param actor      - target player.
-     * @param parameters - parameters
+     * @param parameters - additional parameters (can be null).
      */
-    void unban(Actor actor, @Nullable PunishParameters parameters);
+    void unban(Actor actor, PunishParameters parameters);
 
     /**
      * Permanently mutes player.
@@ -37,17 +36,17 @@ public interface BanManager {
      * @param target     - target player.
      * @param banner     - banner.
      * @param reason     - mute reason.
-     * @param parameters - parameters.
+     * @param parameters - additional parameters (can be null).
      */
-    void mute(Actor target, Actor banner, String reason, @Nullable PunishParameters parameters);
+    void mute(Actor target, Actor banner, String reason, PunishParameters parameters);
 
     /**
      * Unmutes player.
      *
      * @param actor      - target player.
-     * @param parameters - parameters
+     * @param parameters - additional parameters (can be null).
      */
-    void unmute(Actor actor, @Nullable PunishParameters parameters);
+    void unmute(Actor actor, PunishParameters parameters);
 
     /**
      * Get player mute if present.

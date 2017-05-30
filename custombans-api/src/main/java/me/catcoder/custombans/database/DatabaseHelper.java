@@ -22,12 +22,12 @@ public class DatabaseHelper {
 
 	private static void createBanTable(Database db) {
 		db.execute(
-				"CREATE TABLE bans (name TEXT(30) NOT NULL, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, admin int(2), expires long(2) DEFAULT '0', date TEXT);");
+				"CREATE TABLE bans (uuid TEXT NOT NULL UNIQUE, NOT NULL, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, params TEXT NOT NULL, time LONG)");
 	}
 
 	private static void createMuteTable(Database db) {
 		db.execute(
-				"CREATE TABLE mutes (name TEXT(30) NOT NULL, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, admin int(2),  expires long(2) DEFAULT '0', date TEXT);");
+				"CREATE TABLE mutes (uuid TEXT NOT NULL UNIQUE, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, params NOT NULL, time LONG)");
 	}
 
 }

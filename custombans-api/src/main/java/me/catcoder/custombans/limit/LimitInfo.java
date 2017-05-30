@@ -15,7 +15,9 @@ public interface LimitInfo {
 
     String getDisallowMessage();
 
-    boolean canAccess(int time, Actor actor);
+    boolean canAccess(int time);
+
+    boolean canBan(Actor target);
 
     public static enum Result {
         ALLOWED, DISALLOWED

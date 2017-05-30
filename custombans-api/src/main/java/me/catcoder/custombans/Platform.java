@@ -1,10 +1,18 @@
 package me.catcoder.custombans;
 
 /**
- * Created by CatCoder on 28.05.2017.
+ * Supported plugin platforms.
+ *
+ * @author CatCoder
  */
 public enum Platform {
 
+    /**
+     * BungeeCord
+     */
     BUNGEE, //https://github.com/SpigotMC/BungeeCord
+    /**
+     * Bukkit or Spigot
+     */
     BUKKIT //https://www.spigotmc.org/ or https://bukkit.org/
 }

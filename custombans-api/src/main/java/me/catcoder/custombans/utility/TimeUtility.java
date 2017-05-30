@@ -7,7 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by CatCoder on 28.05.2017.
+ * Date parsing utilities.
+ *
+ * @author CatCoder
  */
 public class TimeUtility {
 

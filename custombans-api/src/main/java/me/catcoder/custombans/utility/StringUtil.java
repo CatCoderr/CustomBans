@@ -24,6 +24,8 @@ import java.util.Map;
 
 /**
  * String utilities.
+ *
+ * @author sk89q
  */
 public final class StringUtil {
 
@@ -32,7 +34,7 @@ public final class StringUtil {
 
     /**
      * Trim a string if it is longer than a certain length.
-     *  
+     *
      * @param str the stirng
      * @param len the length to trim to
      * @return a new string
@@ -47,9 +49,9 @@ public final class StringUtil {
 
     /**
      * Join an array of strings into a string.
-     * 
-     * @param str the string array
-     * @param delimiter the delimiter
+     *
+     * @param str          the string array
+     * @param delimiter    the delimiter
      * @param initialIndex the initial index to start form
      * @return a new string
      */
@@ -66,15 +68,15 @@ public final class StringUtil {
 
     /**
      * Join an array of strings into a string.
-     * 
-     * @param str the string array
-     * @param delimiter the delimiter
+     *
+     * @param str          the string array
+     * @param delimiter    the delimiter
      * @param initialIndex the initial index to start form
-     * @param quote the character to put around each entry
+     * @param quote        the character to put around each entry
      * @return a new string
      */
     public static String joinQuotedString(String[] str, String delimiter,
-            int initialIndex, String quote) {
+                                          int initialIndex, String quote) {
         if (str.length == 0) {
             return "";
         }
@@ -90,8 +92,8 @@ public final class StringUtil {
 
     /**
      * Join an array of strings into a string.
-     * 
-     * @param str the string array
+     *
+     * @param str       the string array
      * @param delimiter the delimiter
      * @return a new string
      */
@@ -101,9 +103,9 @@ public final class StringUtil {
 
     /**
      * Join an array of strings into a string.
-     * 
-     * @param str an array of objects
-     * @param delimiter the delimiter
+     *
+     * @param str          an array of objects
+     * @param delimiter    the delimiter
      * @param initialIndex the initial index to start form
      * @return a new string
      */
@@ -120,9 +122,9 @@ public final class StringUtil {
 
     /**
      * Join an array of strings into a string.
-     * 
-     * @param str a list of integers
-     * @param delimiter the delimiter
+     *
+     * @param str          a list of integers
+     * @param delimiter    the delimiter
      * @param initialIndex the initial index to start form
      * @return a new string
      */
@@ -140,12 +142,12 @@ public final class StringUtil {
     /**
      * Join an list of strings into a string.
      *
-     * @param str a list of strings
-     * @param delimiter the delimiter
+     * @param str          a list of strings
+     * @param delimiter    the delimiter
      * @param initialIndex the initial index to start form
      * @return a new string
      */
-    public static String joinString(Collection<?> str, String delimiter,int initialIndex) {
+    public static String joinString(Collection<?> str, String delimiter, int initialIndex) {
         if (str.isEmpty()) {
             return "";
         }
@@ -166,19 +168,19 @@ public final class StringUtil {
 
     /**
      * <p>Find the Levenshtein distance between two Strings.</p>
-     *
+     * <p>
      * <p>This is the number of changes needed to change one String into
      * another, where each change is a single character modification (deletion,
      * insertion or substitution).</p>
-     *
+     * <p>
      * <p>The previous implementation of the Levenshtein distance algorithm
      * was from <a href="http://www.merriampark.com/ld.htm">http://www.merriampark.com/ld.htm</a></p>
-     *
+     * <p>
      * <p>Chas Emerick has written an implementation in Java, which avoids an OutOfMemoryError
      * which can occur when my Java implementation is used with very large strings.<br>
      * This implementation of the Levenshtein distance algorithm
      * is from <a href="http://www.merriampark.com/ldjava.htm">http://www.merriampark.com/ldjava.htm</a></p>
-     *
+     * <p>
      * <pre>
      * StringUtil.getLevenshteinDistance(null, *)             = IllegalArgumentException
      * StringUtil.getLevenshteinDistance(*, null)             = IllegalArgumentException
@@ -193,8 +195,8 @@ public final class StringUtil {
      * StringUtil.getLevenshteinDistance("hello", "hallo")    = 1
      * </pre>
      *
-     * @param s  the first String, must not be null
-     * @param t  the second String, must not be null
+     * @param s the first String, must not be null
+     * @param t the second String, must not be null
      * @return result distance
      * @throws IllegalArgumentException if either String input {@code null}
      */

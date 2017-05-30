@@ -1,5 +1,6 @@
 package me.catcoder.custombans.punishment;
 
+import me.catcoder.custombans.database.Database;
 import me.catcoder.custombans.language.MessageFormatter;
 
 import java.util.UUID;
@@ -9,8 +10,8 @@ import java.util.UUID;
  */
 public class Mute extends Punishment {
 
-    public Mute(String reason, UUID uniqueId, String banner) {
-        super(reason, uniqueId, banner);
+    public Mute(String reason, UUID uniqueId, String banner, String params) {
+        super(reason, uniqueId, banner, params);
     }
 
     @Override
@@ -21,5 +22,10 @@ public class Mute extends Punishment {
                 .format("formats.mute_format");
     }
 
-
+    @Override
+    public void insertInto(Database database) {
+        database.execute(
+                "INSERT INTO `mutes` (uuid, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
+                getUniqueId().toString(), getBanner(), getReason(), params == null ? "" : params, 0L);
+    }
 }

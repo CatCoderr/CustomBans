@@ -1,9 +1,10 @@
 package me.catcoder.custombans.punishment;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import me.catcoder.custombans.database.Database;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,14 @@ public abstract class Punishment {
     private final String reason;
     private final UUID uniqueId;
     private final String banner;
+    @Getter(AccessLevel.PACKAGE)
+    protected final String params;
 
     public abstract String getMessage();
+
+    public boolean hasParameter(String key) {
+        return params != null && Arrays.asList(params.split(",")).contains(key.toLowerCase());
+    }
+
+    public abstract void insertInto(Database database);
 }

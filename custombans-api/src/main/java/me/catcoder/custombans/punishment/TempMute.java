@@ -1,5 +1,6 @@
 package me.catcoder.custombans.punishment;
 
+import me.catcoder.custombans.database.Database;
 import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.utility.TimeUtility;
 
@@ -12,8 +13,8 @@ public class TempMute extends Mute implements Temporary {
 
     private final long expires;
 
-    public TempMute(String reason, UUID uniqueId, String banner, long expires) {
-        super(reason, uniqueId, banner);
+    public TempMute(String reason, UUID uniqueId, String banner, long expires, String params) {
+        super(reason, uniqueId, banner, params);
         this.expires = expires;
     }
 
@@ -34,5 +35,13 @@ public class TempMute extends Mute implements Temporary {
                 .addVariable("reason", getReason())
                 .addVariable("unit", TimeUtility.timeUntilNow(getExpires(), true))
                 .format("formats.tempmute_format");
+    }
+
+
+    @Override
+    public void insertInto(Database database) {
+        database.execute(
+                "INSERT INTO `mutes` (uuid, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
+                getUniqueId().toString(), getBanner(), getReason(), params == null ? "" : params, getExpires());
     }
 }

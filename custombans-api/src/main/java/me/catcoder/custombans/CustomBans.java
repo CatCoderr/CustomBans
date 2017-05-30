@@ -2,6 +2,8 @@ package me.catcoder.custombans;
 
 import com.sk89q.CommandLocals;
 import com.sk89q.CommandsManager;
+import com.sk89q.SimpleInjector;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Builder;
 import me.catcoder.custombans.actor.Actor;
@@ -11,6 +13,7 @@ import me.catcoder.custombans.database.*;
 import me.catcoder.custombans.language.Language;
 import me.catcoder.custombans.limit.Limiter;
 import me.catcoder.custombans.punishment.ActionType;
+import me.catcoder.custombans.storage.PunishmentStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +24,12 @@ import java.util.logging.Logger;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Created by Ruslan on 25.04.2017.
+ * CustomBans API class.
+ *
+ * @author CatCoder
  */
 @Getter
-public class CustomBans {
+public abstract class CustomBans {
 
     /**
      * Plugin instance.
@@ -73,6 +78,14 @@ public class CustomBans {
      * Database store (bans, mutes)
      */
     private final Database database;
+    /**
+     * Punisments storage.
+     */
+    private final PunishmentStorage storage;
+    /**
+     * Plugin version.
+     */
+    private final String version;
 
     /**
      * Constructs plugin instance.
@@ -92,7 +105,8 @@ public class CustomBans {
             File workingDirectory,
             Logger logger,
             Platform platform,
-            BanManager banManager)
+            BanManager banManager,
+            String version)
             throws
             IOException,
             UnsupportedOperationException,
@@ -107,6 +121,7 @@ public class CustomBans {
         this.logger = logger;
         this.limiter = limiter;
         this.platform = platform;
+        this.version = version;
 
         this.workingDirectory = workingDirectory;
         this.banManager = banManager;
@@ -115,6 +130,8 @@ public class CustomBans {
         //Load language
         this.language = new Language(new File(workingDirectory, "language.yml"), this);
         this.database = setupDatabase();
+
+        this.storage = new PunishmentStorage(database, this);
 
         //Implementing CommandsManager
         this.commandExecutor = new CommandsManager<Actor>() {
@@ -125,14 +142,16 @@ public class CustomBans {
                 return player.hasPermission(permission);
             }
 
+            //CustomBans edit.
             @Override
             public void checkLimit(Actor player, ActionType type, CommandLocals locals) {
-                //Limit checking
+                //Limit checking.
                 limiter.checkLimit(player, type, locals);
             }
         };
+        this.registerCommands();
 
-        //Inform user
+        //Inform user.
         logger.log(Level.INFO, "CustomBans (ALPHA) [{0}] enabled.", platform);
     }
 
@@ -166,7 +185,32 @@ public class CustomBans {
     }
 
     /**
+     * Registering commands.
+     */
+    private void registerCommands() {
+        //Setting our injector arguments.
+        commandExecutor.setInjector(new SimpleInjector(this));
+
+        //Registering commands.
+    }
+
+
+    /**
+     * Utility method for getting Actors.
+     *
+     * @param name - name of actor.
+     * @return Actor
+     */
+    public abstract Actor getActor(String name);
+
+    /**
+     * Reload plugin.
+     */
+    public abstract boolean reload(ReloadIntent intent);
+
+    /**
      * Nulling plugin instance.
+     * Internal access.
      */
     protected static void unregister() {
         instance = null;

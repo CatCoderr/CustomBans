@@ -28,13 +28,31 @@ public class PunishParameters {
         return parameters.put(key, value);
     }
 
-    public static PunishParameters of(CommandContext commandContext) {
-        PunishParameters parameters = new PunishParameters();
 
-        for (char flag : commandContext.getFlags()) {
-            parameters.put(flag, flag);
+    public static PunishParametersBuilder builder(PunishParameters handle) {
+        return new PunishParametersBuilder(handle);
+    }
+
+    public static PunishParametersBuilder builder() {
+        return builder(null);
+    }
+
+    public static class PunishParametersBuilder {
+
+        private PunishParameters parameters;
+
+        public PunishParametersBuilder(PunishParameters handle) {
+            this.parameters = (handle == null ? new PunishParameters() : handle);
         }
-        commandContext.getValueFlags().forEach(parameters::put);
-        return parameters;
+
+        public PunishParametersBuilder append(Object key, Object value) {
+            this.parameters.put(key, value);
+            return this;
+        }
+
+        public PunishParameters build() {
+            return parameters;
+        }
+
     }
 }
