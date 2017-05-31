@@ -226,7 +226,7 @@ public class CustomBans {
     /**
      * Reload the main plugin config.
      */
-    public void reloadPlugionConfiguration() {
+    public void reloadPluginConfiguration() {
         this.pluginConfiguration = ConfigUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
     }
 

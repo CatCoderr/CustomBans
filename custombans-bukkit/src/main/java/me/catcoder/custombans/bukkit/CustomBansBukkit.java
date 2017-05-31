@@ -56,7 +56,7 @@ public class CustomBansBukkit extends JavaPlugin {
     private void reload(ReloadIntent intent) {
         switch (intent) {
             case CONFIG:
-                customBans.reloadPlugionConfiguration();
+                customBans.reloadPluginConfiguration();
                 break;
             case LANGUAGE:
                 try {
