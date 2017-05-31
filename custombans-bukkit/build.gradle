@@ -1,8 +1,11 @@
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
+
 dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
+    compile project(':custombans-api')
 }
 
 

@@ -2,6 +2,7 @@ package me.catcoder.custombans.language;
 
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.config.Configuration;
+import me.catcoder.custombans.utility.ConfigUtility;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class Language {
 
     public Language(File file, CustomBans plugin) throws IOException {
         this.file = file;
-        this.configuration = plugin.getConfigurationLoader().load(file);
+        this.configuration = ConfigUtility.get(plugin.getConfigurationLoader(), file);
         this.plugin = plugin;
     }
 

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @author CatCoder
  */
-public class TimeUtility {
+public final class TimeUtility {
 
     private TimeUtility() {
     }

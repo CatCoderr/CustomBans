@@ -7,6 +7,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Builder;
 import me.catcoder.custombans.actor.Actor;
+import me.catcoder.custombans.commands.BanCommands;
+import me.catcoder.custombans.commands.MuteCommands;
+import me.catcoder.custombans.commands.PluginCommands;
 import me.catcoder.custombans.config.Configuration;
 import me.catcoder.custombans.config.ConfigurationLoader;
 import me.catcoder.custombans.database.*;
@@ -14,6 +17,7 @@ import me.catcoder.custombans.language.Language;
 import me.catcoder.custombans.limit.Limiter;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.storage.PunishmentStorage;
+import me.catcoder.custombans.utility.ConfigUtility;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +56,7 @@ public class CustomBans {
      * Manager for commands manipulation.
      */
     @Getter
-    private final CommandsManager commandExecutor;
+    private final CommandsManager<Actor> commandExecutor;
     /**
      * Limits checker (tempban, ban, etc.).
      */
@@ -83,7 +87,7 @@ public class CustomBans {
      * The main plugin configuration (config.yml).
      */
     @Getter
-    private final Configuration pluginConfiguration;
+    private Configuration pluginConfiguration;
     /**
      * Database store (bans, mutes)
      */
@@ -148,7 +152,7 @@ public class CustomBans {
         this.workingDirectory = workingDirectory;
         this.banManager = banManager;
         //Load 'config.yml file
-        this.pluginConfiguration = configurationLoader.load(new File(workingDirectory, "config.yml"));
+        this.pluginConfiguration = ConfigUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
         //Load language
         this.language = new Language(new File(workingDirectory, "language.yml"), this);
         this.database = setupDatabase();
@@ -214,6 +218,16 @@ public class CustomBans {
         commandExecutor.setInjector(new SimpleInjector(this));
 
         //Registering commands.
+        commandExecutor.register(PluginCommands.class); /** /custombans, /cb */
+        commandExecutor.register(BanCommands.class); /** /ban, /unban, /tempban */
+        commandExecutor.register(MuteCommands.class); /** /mute, /unmute, /tempmute */
+    }
+
+    /**
+     * Reload the main plugin config.
+     */
+    public void reloadPlugionConfiguration() {
+        this.pluginConfiguration = ConfigUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
     }
 
 
