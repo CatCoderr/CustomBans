@@ -5,5 +5,5 @@ package me.catcoder.custombans;
  */
 public enum ReloadIntent {
 
-    LANGUAGE, PUNISHMENTS, CONFIG
+    LANGUAGE, PUNISHMENTS, CONFIG, LIMITER
 }

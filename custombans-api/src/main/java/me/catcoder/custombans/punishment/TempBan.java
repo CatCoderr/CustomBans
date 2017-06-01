@@ -1,6 +1,6 @@
 package me.catcoder.custombans.punishment;
 
-import me.catcoder.custombans.database.Database;
+import me.catcoder.custombans.database.AbstractDatabase;
 import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.utility.TimeUtility;
 
@@ -34,12 +34,12 @@ public class TempBan extends Ban implements Temporary {
         return MessageFormatter.create()
                 .addVariable("banner", getBanner())
                 .addVariable("reason", getReason())
-                .addVariable("unit", TimeUtility.timeUntilNow(getExpires(), true))
+                .addVariable("unit", TimeUtility.timeUntilNow(getExpires()))
                 .format("formats.tempban_format");
     }
 
     @Override
-    public void insertInto(Database database) {
+    public void insertInto(AbstractDatabase database) {
         database.execute(
                 "INSERT INTO `mutes` (uuid, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
                 getUniqueId().toString(), getBanner(), getReason(), params == null ? "" : params, getExpires());

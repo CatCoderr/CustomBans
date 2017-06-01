@@ -8,20 +8,10 @@ import me.catcoder.custombans.actor.Actor;
 
 public interface LimitInfo {
 
-
-    Result getResult();
-
-    boolean allowed();
-
-    String getDisallowMessage();
-
     boolean canAccess(long time);
 
     boolean canBan(Actor target);
 
     long getAllowedTime();
 
-    public static enum Result {
-        ALLOWED, DISALLOWED
-    }
 }

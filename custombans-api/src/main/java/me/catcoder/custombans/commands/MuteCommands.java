@@ -25,7 +25,7 @@ public class MuteCommands {
     }
 
 
-    @Command(aliases = "mute, cmute",
+    @Command(aliases = {"mute", "cmute"},
             usage = "[player] [reason]",
             flags = "cs",
             desc = "Mutes player permanently.",
@@ -93,6 +93,6 @@ public class MuteCommands {
         if (args.hasFlag('s')) {
             builder.append(SILENT, true);
         }
-        plugin.getBanManager().tempmute(target, actor, reason, time, builder.build());
+        plugin.getBanManager().tempmute(target, actor, reason, System.currentTimeMillis() + time, builder.build());
     }
 }

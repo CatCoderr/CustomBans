@@ -5,6 +5,7 @@ import com.sk89q.CommandsManager;
 import com.sk89q.SimpleInjector;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Builder;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.commands.BanCommands;
@@ -22,6 +23,7 @@ import me.catcoder.custombans.utility.ConfigUtility;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -45,7 +47,7 @@ public class CustomBans {
      * Manager for bans/mutes manipulation.
      */
     @Getter
-    private final BanManager banManager;
+    private BanManager banManager;
     /**
      * YAML configuration loader.
      */
@@ -61,7 +63,7 @@ public class CustomBans {
      * Limits checker (tempban, ban, etc.).
      */
     @Getter
-    private final Limiter limiter;
+    private Limiter limiter;
     /**
      * Plugin folder.
      */
@@ -92,7 +94,7 @@ public class CustomBans {
      * Database store (bans, mutes)
      */
     @Getter
-    private final Database database;
+    private final AbstractDatabase database;
     /**
      * Punisments storage.
      */
@@ -112,29 +114,24 @@ public class CustomBans {
     /**
      * Constructs plugin instance.
      *
-     * @param limiter          - {@link Limiter}
      * @param workingDirectory - plugin folder
      * @param logger           - logger
      * @param platform         - platform (BUNGEE, BUKKIT)
      * @throws IOException                   - if configurations ({@link Language, plugin config} has load error.
      * @throws UnsupportedOperationException - platform exceptions.
-     * @throws Database.ConnectionException  - if database connection failed.
      * @throws SQLException                  - if queries to database is not valid.
      */
     @Builder
     public CustomBans(
-            Limiter limiter,
             File workingDirectory,
             Logger logger,
             Platform platform,
-            BanManager banManager,
             Function<String, Actor> actorFunction,
             Consumer<ReloadIntent> reloader,
             String version)
             throws
             IOException,
             UnsupportedOperationException,
-            Database.ConnectionException,
             SQLException {
 
         checkArgument(instance == null, "Instance already set.");
@@ -143,14 +140,12 @@ public class CustomBans {
         instance = this;
 
         this.logger = logger;
-        this.limiter = limiter;
         this.platform = platform;
         this.version = version;
         this.actorFunction = actorFunction;
         this.reloader = reloader;
 
         this.workingDirectory = workingDirectory;
-        this.banManager = banManager;
         //Load 'config.yml file
         this.pluginConfiguration = ConfigUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
         //Load language
@@ -182,30 +177,28 @@ public class CustomBans {
     }
 
     /**
-     * Setting up {@link Database}
+     * Setting up {@link AbstractDatabase}
      *
-     * @return - configured {@link Database}
+     * @return - configured {@link AbstractDatabase}
      * @throws UnsupportedOperationException - platform exceptions.
-     * @throws Database.ConnectionException  - if database connection failed.
      * @throws SQLException                  - if queries to database is not valid.
      */
-    private Database setupDatabase() throws Database.ConnectionException, UnsupportedOperationException, SQLException {
+    private AbstractDatabase setupDatabase() throws UnsupportedOperationException, SQLException {
         boolean mysql = pluginConfiguration.getBoolean("mysql.enabled");
-        DatabaseCore core;
+        AbstractDatabase data;
         if (!mysql && platform == Platform.BUNGEE)
             throw new UnsupportedOperationException("SQLite not supported for BungeeCord platform.");
         if (mysql) {
             Configuration mysqlSection = pluginConfiguration.getSection("mysql");
-            core = new MySQLCore(
-                    mysqlSection.getString("host"),
-                    mysqlSection.getString("user"),
-                    mysqlSection.getString("password"),
-                    mysqlSection.getString("database"),
-                    mysqlSection.getString("port"));
+            data = DatabaseBuilder.useMySql()
+                    .host(mysqlSection.getString("host"))
+                    .data(mysqlSection.getString("database"))
+                    .password(mysqlSection.getString("password"))
+                    .user(mysqlSection.getString("user"))
+                    .create();
         } else {
-            core = new SQLiteCore(new File(workingDirectory, "bans.db"));
+            data = DatabaseBuilder.useSqLite().file(new File(workingDirectory, "bans.db")).create();
         }
-        Database data = new Database(core);
         DatabaseHelper.setup(data);
         return data;
     }
@@ -221,6 +214,7 @@ public class CustomBans {
         commandExecutor.register(PluginCommands.class); /** /custombans, /cb */
         commandExecutor.register(BanCommands.class); /** /ban, /unban, /tempban */
         commandExecutor.register(MuteCommands.class); /** /mute, /unmute, /tempmute */
+
     }
 
     /**
@@ -249,10 +243,16 @@ public class CustomBans {
     }
 
     /**
-     * Nulling plugin instance.
-     * Internal access.
+     * Setters
      */
-    protected static void unregister() {
-        instance = null;
+
+    public void setBanManager(BanManager banManager) {
+        checkArgument(this.banManager == null);
+        this.banManager = banManager;
+    }
+
+    public void setLimiter(Limiter limiter) {
+        checkArgument(this.limiter == null);
+        this.limiter = limiter;
     }
 }

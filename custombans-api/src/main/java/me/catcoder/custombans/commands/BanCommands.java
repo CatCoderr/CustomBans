@@ -10,6 +10,7 @@ import me.catcoder.custombans.punishment.PunishParameters;
 import me.catcoder.custombans.utility.TimeUtility;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static me.catcoder.custombans.utility.ParameterKeys.*;
 
@@ -25,7 +26,7 @@ public class BanCommands {
         this.plugin = plugin;
     }
 
-    @Command(aliases = "ban, cban",
+    @Command(aliases = {"ban", "cban"},
             usage = "[player] [reason]",
             flags = "cs",
             desc = "Bans player permanently.",
@@ -85,7 +86,7 @@ public class BanCommands {
         }
         if (!info.canAccess(time)) {
             throw new CommandException(MessageFormatter.create()
-                    .addVariable("allowed", TimeUtility.getTime(new Date(info.getAllowedTime()), false))
+                    .addVariable("allowed", TimeUtility.getTime(new Date(TimeUnit.MINUTES.toMillis(info.getAllowedTime())), false))
                     .format("limit.restricted_time"));
         }
         if (args.hasFlag('c')) {
@@ -94,6 +95,6 @@ public class BanCommands {
         if (args.hasFlag('s')) {
             builder.append(SILENT, true);
         }
-        plugin.getBanManager().tempban(target, actor, reason, time, builder.build());
+        plugin.getBanManager().tempban(target, actor, reason, System.currentTimeMillis() + time, builder.build());
     }
 }

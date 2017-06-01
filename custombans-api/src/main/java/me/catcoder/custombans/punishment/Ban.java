@@ -1,6 +1,6 @@
 package me.catcoder.custombans.punishment;
 
-import me.catcoder.custombans.database.Database;
+import me.catcoder.custombans.database.AbstractDatabase;
 import me.catcoder.custombans.language.MessageFormatter;
 
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class Ban extends Punishment {
     }
 
     @Override
-    public void insertInto(Database database) {
+    public void insertInto(AbstractDatabase database) {
         database.execute(
                 "INSERT INTO `bans` (uuid, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
                 getUniqueId().toString(), getBanner(), getReason(), params == null ? "" : params, 0);

@@ -11,4 +11,5 @@ public interface Limiter {
 
     void checkLimit(Actor sender, ActionType type, CommandLocals locals);
 
+    void reload();
 }

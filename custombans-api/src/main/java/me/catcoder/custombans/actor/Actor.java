@@ -22,4 +22,6 @@ public interface Actor {
     Ban getBan();
 
     Mute getMute();
+
+    boolean isOnline();
 }

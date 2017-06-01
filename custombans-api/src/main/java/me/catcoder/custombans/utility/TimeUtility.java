@@ -162,7 +162,7 @@ public final class TimeUtility {
 
         if (unit == null) throw new CommandException("Unknown time modifier: " + context.getString(2));
 
-        return System.currentTimeMillis() + unit.toMillis(time);
+        return unit.toMillis(time);
     }
 
     private static TimeUnit getFromModifier(String modifier) {

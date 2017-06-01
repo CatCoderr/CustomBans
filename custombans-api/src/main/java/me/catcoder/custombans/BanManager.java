@@ -91,7 +91,7 @@ public interface BanManager {
      *
      * @return collection of {@link Punishment}
      */
-    Collection<Punishment> getPunishments();
+    Iterable<Punishment> getPunishments();
 
     /**
      * Get all bans.

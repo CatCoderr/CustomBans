@@ -9,7 +9,6 @@ import me.catcoder.custombans.ReloadIntent;
 import me.catcoder.custombans.actor.Actor;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author CatCoder
@@ -23,27 +22,25 @@ public class PluginCommands {
     }
 
 
-    @Command(aliases = "cbreload",
-            desc = "Reload the plugin.",
-            usage = "[flags]",
-            flags = "pcl"
+    @Command(aliases = {"custombans", "cb"},
+            desc = "Plugin info command."
     )
+    public void custombans(CommandContext args, Actor actor) {
+        actor.printMessage("&7[&cCustomBans&7]: v&c%s &7by &6CatCoder", plugin.getVersion());
+    }
+
+    @Command(aliases = "cbreload",
+            desc = "Reload following plugin sections.",
+            flags = "pcml")
     @CommandPermissions("custombans.reload")
     public void reload(CommandContext args, Actor actor) {
         ReloadIntent[] intents = parseIntents(args);
 
         for (ReloadIntent intent : intents) {
             plugin.reload(intent);
-            actor.printMessage("§aReloaded: %s", intent);
+            actor.printMessage("&aReloaded: %s", intent);
         }
-        actor.printMessage("§aOperation completed successfully.");
-    }
-
-    @Command(aliases = {"custombans", "cb"},
-            desc = "Plugin info command."
-    )
-    public void custombans(CommandContext args, Actor actor) {
-        actor.printMessage("§7CustomBans v§c%s §7by §6CatCoder.", plugin.getVersion());
+        actor.printMessage("&aOperation completed.");
     }
 
     private ReloadIntent[] parseIntents(CommandContext args) {
@@ -62,8 +59,11 @@ public class PluginCommands {
                 case 'c':
                     intents[i] = ReloadIntent.CONFIG;
                     break;
-                case 'l':
+                case 'm':
                     intents[i] = ReloadIntent.LANGUAGE;
+                    break;
+                case 'l':
+                    intents[i] = ReloadIntent.LIMITER;
                     break;
             }
         }

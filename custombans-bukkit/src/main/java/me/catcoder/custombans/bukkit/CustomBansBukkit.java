@@ -1,12 +1,15 @@
 package me.catcoder.custombans.bukkit;
 
 import com.google.common.base.Preconditions;
+import com.sk89q.*;
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.Platform;
 import me.catcoder.custombans.ReloadIntent;
 import me.catcoder.custombans.actor.Actor;
-import me.catcoder.custombans.database.Database;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +34,7 @@ public class CustomBansBukkit extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            getDataFolder().mkdir();
             //Implementing API.
             customBans = CustomBans.builder()
                     .logger(getLogger())
@@ -39,18 +43,48 @@ public class CustomBansBukkit extends JavaPlugin {
                     .workingDirectory(getDataFolder())
                     .actorFunction(this::getActor)
                     .reloader(this::reload)
-                    // .limiter()
-                    // .banManager()
                     .build();
-        } catch (IOException | Database.ConnectionException | SQLException e) {
+            //Set limiter and ban manager
+            customBans.setLimiter(new BukkitLimiter(customBans));
+            customBans.setBanManager(new BukkitBanManager(customBans));
+            //Load punishments.
+            reload(ReloadIntent.PUNISHMENTS);
+        } catch (IOException | SQLException e) {
             getLogger().log(Level.SEVERE, "Cannot setting up CustomBans.", e);
         }
     }
 
+    //Command handling
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Actor actor = (sender instanceof Player) ? new BukkitActor((Player) sender) : ConsoleActor.INSTANCE;
+
+        try {
+            customBans.getCommandExecutor().execute(command.getName(), args, actor, actor);
+        } catch (CommandPermissionsException e) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission.");
+        } catch (MissingNestedCommandException e) {
+            sender.sendMessage(ChatColor.RED + e.getUsage());
+        } catch (CommandUsageException e) {
+            sender.sendMessage(ChatColor.RED + e.getMessage());
+            sender.sendMessage(ChatColor.RED + e.getUsage());
+        } catch (WrappedCommandException e) {
+            if (e.getCause() instanceof NumberFormatException) {
+                sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
+            } else {
+                sender.sendMessage(ChatColor.RED + "An error has occurred. See console.");
+                e.printStackTrace();
+            }
+        } catch (CommandException e) {
+            e.printStackTrace();
+            sender.sendMessage(ChatColor.RED + e.getMessage());
+        }
+        return true;
+    }
+
     private Actor getActor(String name) {
         Player player = Bukkit.getPlayerExact(name);
-        Preconditions.checkArgument(player != null, "Player %s is offline.", name);
-        return new BukkitActor(player);
+        return player == null ? new BukkitActor(name) : new BukkitActor(player);
     }
 
     private void reload(ReloadIntent intent) {

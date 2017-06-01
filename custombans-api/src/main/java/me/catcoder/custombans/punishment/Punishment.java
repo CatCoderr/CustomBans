@@ -1,10 +1,9 @@
 package me.catcoder.custombans.punishment;
 
 import lombok.*;
-import me.catcoder.custombans.database.Database;
+import me.catcoder.custombans.database.AbstractDatabase;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -27,5 +26,7 @@ public abstract class Punishment {
         return params != null && Arrays.asList(params.split(",")).contains(key.toLowerCase());
     }
 
-    public abstract void insertInto(Database database);
+
+
+    public abstract void insertInto(AbstractDatabase database);
 }
