@@ -15,7 +15,7 @@ import java.util.UUID;
 public abstract class Punishment {
 
     private final String reason;
-    private final UUID uniqueId;
+    private final String name;
     private final String banner;
     @Getter(AccessLevel.PACKAGE)
     protected final String params;

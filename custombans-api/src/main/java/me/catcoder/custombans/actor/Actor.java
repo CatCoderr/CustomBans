@@ -17,8 +17,6 @@ public interface Actor {
 
     String getName();
 
-    UUID getUniqueId();
-
     Ban getBan();
 
     Mute getMute();

@@ -17,12 +17,12 @@ public class DatabaseHelper {
 
     private static void createBanTable(AbstractDatabase db) {
         db.execute(
-                "CREATE TABLE IF NOT EXISTS `bans` (uuid TEXT NOT NULL UNIQUE, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, params TEXT NOT NULL, time BIGINT NOT NULL DEFAULT 0)");
+                "CREATE TABLE IF NOT EXISTS `bans` (name TEXT(30) NOT NULL UNIQUE, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, params TEXT NOT NULL, time BIGINT NOT NULL DEFAULT 0)");
     }
 
     private static void createMuteTable(AbstractDatabase db) {
         db.execute(
-                "CREATE TABLE IF NOT EXISTS `mutes` (uuid TEXT NOT NULL UNIQUE, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, params TEXT NOT NULL, time BIGINT NOT NULL DEFAULT 0)");
+                "CREATE TABLE IF NOT EXISTS `mutes` (name TEXT(30) NOT NULL UNIQUE, banner TEXT(30) NOT NULL, reason TEXT(30) NOT NULL, params TEXT NOT NULL, time BIGINT NOT NULL DEFAULT 0)");
     }
 
 }

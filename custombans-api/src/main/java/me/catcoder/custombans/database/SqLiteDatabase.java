@@ -27,25 +27,12 @@ public class SqLiteDatabase implements AbstractDatabase {
     @Override
     public int execute(String query, Object... objects) {
         StatementWrapper wrapper = StatementWrapper.create(this, query);
-
-        int result = wrapper.execute(PreparedStatement.RETURN_GENERATED_KEYS, objects);
-        this.commitQuery();
-        return result;
-    }
-
-    private void commitQuery() {
-        try {
-            this.connection.commit();
-        } catch (SQLException e) {
-            throw new IllegalStateException("Unable to commit the last query.", e);
-        }
+        return wrapper.execute(PreparedStatement.RETURN_GENERATED_KEYS, objects);
     }
 
     @Override
     public int execute(StatementWrapper wrapper, Object... objects) {
-        int result = wrapper.execute(PreparedStatement.RETURN_GENERATED_KEYS, objects);
-        this.commitQuery();
-        return result;
+        return wrapper.execute(PreparedStatement.RETURN_GENERATED_KEYS, objects);
     }
 
     @Override
@@ -77,7 +64,6 @@ public class SqLiteDatabase implements AbstractDatabase {
     protected void refreshConnection() {
         try {
             this.connection = dataSource.getConnection();
-            this.connection.setAutoCommit(false);
         } catch (SQLException ignored) {
         }
     }

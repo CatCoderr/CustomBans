@@ -55,10 +55,6 @@ public class ConsoleActor implements Actor {
         return true;
     }
 
-    @Override
-    public UUID getUniqueId() {
-        throw new UnsupportedOperationException("Player method only.");
-    }
 
     @Override
     public Ban getBan() {

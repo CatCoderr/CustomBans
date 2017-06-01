@@ -24,9 +24,9 @@ public class PunishmentStorage {
 
 
     @Getter
-    private final Map<UUID, Ban> bans = new HashMap<>();
+    private final Map<String, Ban> bans = new HashMap<>();
     @Getter
-    private final Map<UUID, Mute> mutes = new HashMap<>();
+    private final Map<String, Mute> mutes = new HashMap<>();
     private final AbstractDatabase database;
     private final CustomBans plugin;
 
@@ -41,23 +41,23 @@ public class PunishmentStorage {
     }
 
     public void add(Mute mute) {
-        mutes.put(mute.getUniqueId(), mute);
+        mutes.put(mute.getName().toLowerCase(), mute);
         mute.insertInto(database);
     }
 
     public void add(Ban ban) {
-        bans.put(ban.getUniqueId(), ban);
+        bans.put(ban.getName().toLowerCase(), ban);
         ban.insertInto(database);
     }
 
-    public void removeBan(UUID uuid) {
-        bans.remove(uuid);
-        database.execute("DELETE FROM `bans` WHERE uuid=?", uuid.toString());
+    public void removeBan(String name) {
+        bans.remove(name.toLowerCase());
+        database.execute("DELETE FROM `bans` WHERE uuid=?", name.toLowerCase());
     }
 
-    public void removeMute(UUID uuid) {
-        mutes.remove(uuid);
-        database.execute("DELETE FROM `mutes` WHERE uuid=?", uuid.toString());
+    public void removeMute(String name) {
+        mutes.remove(name.toLowerCase());
+        database.execute("DELETE FROM `mutes` WHERE uuid=?", name.toLowerCase());
     }
 
     /////////////////////////////////////////////////////
@@ -65,18 +65,18 @@ public class PunishmentStorage {
     private ResponseHandler<ResultSet, ?> getBansLoader() {
         return (rs) -> {
             while (rs.next()) {
-                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                String name = rs.getString("name");
                 String banner = rs.getString("banner");
                 String reason = rs.getString("reason");
                 String params = rs.getString("params");
                 long time = rs.getLong("time");
                 Ban ban;
                 if (time > 0) {
-                    ban = new TempBan(reason, uuid, banner, time, (params.isEmpty() ? null : params));
+                    ban = new TempBan(reason, name, banner, time, (params.isEmpty() ? null : params));
                 } else {
-                    ban = new Ban(reason, uuid, banner, (params.isEmpty() ? null : params));
+                    ban = new Ban(reason, name, banner, (params.isEmpty() ? null : params));
                 }
-                bans.put(ban.getUniqueId(), ban);
+                bans.put(name.toLowerCase(), ban);
             }
             plugin.getLogger().log(Level.INFO, "Bans loaded ({0})", bans.size());
             return Void.TYPE;
@@ -86,18 +86,18 @@ public class PunishmentStorage {
     private ResponseHandler<ResultSet, ?> getMutesLoader() {
         return (rs) -> {
             while (rs.next()) {
-                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                String name = rs.getString("name");
                 String banner = rs.getString("banner");
                 String reason = rs.getString("reason");
                 String params = rs.getString("params");
                 long time = rs.getLong("time");
                 Mute mute;
                 if (time > 0) {
-                    mute = new TempMute(reason, uuid, banner, time, (params.isEmpty() ? null : params));
+                    mute = new TempMute(reason, name, banner, time, (params.isEmpty() ? null : params));
                 } else {
-                    mute = new Mute(reason, uuid, banner, (params.isEmpty() ? null : params));
+                    mute = new Mute(reason, name, banner, (params.isEmpty() ? null : params));
                 }
-                mutes.put(mute.getUniqueId(), mute);
+                mutes.put(mute.getName().toLowerCase(), mute);
             }
             plugin.getLogger().log(Level.INFO, "Mutes loaded ({0})", mutes.size());
             return Void.TYPE;

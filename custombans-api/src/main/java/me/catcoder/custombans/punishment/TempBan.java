@@ -13,8 +13,8 @@ public class TempBan extends Ban implements Temporary {
 
     private final long expires;
 
-    public TempBan(String reason, UUID uniqueId, String banner, long expires, String params) {
-        super(reason, uniqueId, banner, params);
+    public TempBan(String reason, String name, String banner, long expires, String params) {
+        super(reason, name, banner, params);
         this.expires = expires;
     }
 
@@ -41,7 +41,7 @@ public class TempBan extends Ban implements Temporary {
     @Override
     public void insertInto(AbstractDatabase database) {
         database.execute(
-                "INSERT INTO `mutes` (uuid, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
-                getUniqueId().toString(), getBanner(), getReason(), params == null ? "" : params, getExpires());
+                "INSERT INTO `mutes` (name, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
+                getName().toLowerCase(), getBanner(), getReason(), params == null ? "" : params, getExpires());
     }
 }

@@ -3,12 +3,3 @@ version: 3.0
 author: CatCoder
 main: me.catcoder.custombans.bukkit.CustomBansBukkit
 soft-depend: [PermissionsEx]
-
-commands:
-  ban:
-  tempban:
-  mute:
-  tempmute:
-  custombans:
-    aliases: [cb]
-  cbreload:

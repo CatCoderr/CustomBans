@@ -6,6 +6,10 @@ import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.Platform;
 import me.catcoder.custombans.ReloadIntent;
 import me.catcoder.custombans.actor.Actor;
+import me.catcoder.custombans.bukkit.command.CommandsManagerRegistration;
+import me.catcoder.custombans.commands.BanCommands;
+import me.catcoder.custombans.commands.MuteCommands;
+import me.catcoder.custombans.commands.PluginCommands;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -30,11 +34,12 @@ public class CustomBansBukkit extends JavaPlugin {
      */
 
     private CustomBans customBans;
+    private CommandsManagerRegistration commands;
 
     @Override
     public void onEnable() {
         try {
-            getDataFolder().mkdir();
+            Preconditions.checkState(getDataFolder().mkdir(), "Cannot create directory.");
             //Implementing API.
             customBans = CustomBans.builder()
                     .logger(getLogger())
@@ -49,12 +54,29 @@ public class CustomBansBukkit extends JavaPlugin {
             customBans.setBanManager(new BukkitBanManager(customBans));
             //Load punishments.
             reload(ReloadIntent.PUNISHMENTS);
+            //Registering commands to Bukkit command map
+            this.commands = new CommandsManagerRegistration(this, customBans.getCommandExecutor());
+            this.registerCommands();
         } catch (IOException | SQLException e) {
             getLogger().log(Level.SEVERE, "Cannot setting up CustomBans.", e);
         }
     }
 
-    //Command handling
+    @Override
+    public void onDisable() {
+        //Unregister commands.
+        commands.unregisterCommands();
+    }
+
+    /**
+     * Commands handling
+     *
+     * @param sender  - sender
+     * @param command - unique command
+     * @param label   - label
+     * @param args    - arguments /test 1 2 3
+     * @return true if command completed successfully.
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Actor actor = (sender instanceof Player) ? new BukkitActor((Player) sender) : ConsoleActor.INSTANCE;
@@ -81,6 +103,13 @@ public class CustomBansBukkit extends JavaPlugin {
         }
         return true;
     }
+
+    private void registerCommands() {
+        commands.register(PluginCommands.class);
+        commands.register(BanCommands.class);
+        commands.register(MuteCommands.class);
+    }
+
 
     private Actor getActor(String name) {
         Player player = Bukkit.getPlayerExact(name);

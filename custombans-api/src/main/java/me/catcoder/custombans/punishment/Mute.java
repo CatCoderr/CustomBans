@@ -10,8 +10,8 @@ import java.util.UUID;
  */
 public class Mute extends Punishment {
 
-    public Mute(String reason, UUID uniqueId, String banner, String params) {
-        super(reason, uniqueId, banner, params);
+    public Mute(String reason, String name, String banner, String params) {
+        super(reason, name, banner, params);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Mute extends Punishment {
     @Override
     public void insertInto(AbstractDatabase database) {
         database.execute(
-                "INSERT INTO `mutes` (uuid, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
-                getUniqueId().toString(), getBanner(), getReason(), params == null ? "" : params, 0L);
+                "INSERT INTO `mutes` (name, banner, reason, params, time) VALUES (?, ?, ?, ?, ?)",
+                getName().toLowerCase(), getBanner(), getReason(), params == null ? "" : params, 0L);
     }
 }

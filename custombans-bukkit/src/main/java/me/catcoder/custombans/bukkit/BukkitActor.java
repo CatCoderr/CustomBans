@@ -6,7 +6,7 @@ import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.punishment.Ban;
 import me.catcoder.custombans.punishment.Mute;
-import me.catcoder.custombans.utility.UUIDFetcher;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -56,14 +56,6 @@ public class BukkitActor implements Actor {
         return name;
     }
 
-    @Override
-    public UUID getUniqueId() {
-        try {
-            return UUIDFetcher.getUUIDOf(name);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public Ban getBan() {

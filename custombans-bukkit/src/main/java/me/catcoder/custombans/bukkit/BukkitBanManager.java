@@ -1,11 +1,12 @@
 package me.catcoder.custombans.bukkit;
 
 import com.google.common.collect.Iterables;
-import lombok.RequiredArgsConstructor;
 import me.catcoder.custombans.BanManager;
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.punishment.*;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -22,8 +23,8 @@ public class BukkitBanManager implements BanManager {
 
     @Override
     public void ban(Actor target, Actor banner, String reason, PunishParameters parameters) {
-        target.printMessage("Banned");
-        customBans.getStorage().add(new Ban(reason, target.getUniqueId(), banner.getName(), null));
+        banner.printMessage("Banned");
+        customBans.getStorage().add(new Ban(reason, target.getName(), banner.getName(), null));
     }
 
     @Override
@@ -53,12 +54,12 @@ public class BukkitBanManager implements BanManager {
 
     @Override
     public Mute getMute(Actor target) {
-        return customBans.getStorage().getMutes().get(target.getUniqueId());
+        return customBans.getStorage().getMutes().get(target.getName());
     }
 
     @Override
     public Ban getBan(Actor target) {
-        return customBans.getStorage().getBans().get(target.getUniqueId());
+        return customBans.getStorage().getBans().get(target.getName());
     }
 
     @Override
@@ -79,5 +80,9 @@ public class BukkitBanManager implements BanManager {
     @Override
     public boolean clear(ActionType type, Actor target) {
         return true;
+    }
+
+    private void announceMessage(String message) {
+        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 }

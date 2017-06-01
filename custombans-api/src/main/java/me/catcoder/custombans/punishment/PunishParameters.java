@@ -1,7 +1,5 @@
 package me.catcoder.custombans.punishment;
 
-import com.sk89q.CommandContext;
-
 import java.util.HashMap;
 import java.util.Map;
 
