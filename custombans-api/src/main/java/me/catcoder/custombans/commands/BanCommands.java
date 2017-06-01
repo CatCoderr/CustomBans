@@ -7,6 +7,7 @@ import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.limit.LimitInfo;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.punishment.PunishParameters;
+import me.catcoder.custombans.utility.ParameterKeys;
 import me.catcoder.custombans.utility.TimeUtility;
 
 import java.util.Date;
@@ -96,5 +97,34 @@ public class BanCommands {
             builder.append(SILENT, true);
         }
         plugin.getBanManager().tempban(target, actor, reason, System.currentTimeMillis() + time, builder.build());
+    }
+
+    @Command(
+            aliases = {"unban", "cunban"},
+            usage = "[player]",
+            flags = "s",
+            desc = "Unban player",
+            min = 1
+    )
+    @CommandPermissions("custombans.unban")
+    public void unban(CommandContext args, Actor actor) throws CommandException {
+        Actor target = plugin.getActor(args.getString(0));
+
+        if (target.getBan() == null) throw new CommandException(MessageFormatter.create()
+                .addVariable("name", target.getName())
+                .format("errors.ban_not_found"));
+
+        if (target.getBan().hasParameter(ParameterKeys.CONSOLE_ACTION)
+                && !target.hasPermission("custombans.unban.console"))
+            throw new CommandException(MessageFormatter.create()
+                    .format("errors.console_banned"));
+
+        PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
+
+        if (args.hasFlag('s')) {
+            builder.append(ParameterKeys.SILENT, true);
+        }
+
+        plugin.getBanManager().unban(target, builder.build());
     }
 }

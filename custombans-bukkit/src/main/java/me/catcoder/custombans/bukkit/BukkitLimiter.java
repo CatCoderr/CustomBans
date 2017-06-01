@@ -1,7 +1,6 @@
 package me.catcoder.custombans.bukkit;
 
 import com.sk89q.CommandLocals;
-import com.sk89q.Console;
 import lombok.Getter;
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.actor.Actor;
@@ -11,7 +10,7 @@ import me.catcoder.custombans.config.Configuration;
 import me.catcoder.custombans.limit.LimitInfo;
 import me.catcoder.custombans.limit.Limiter;
 import me.catcoder.custombans.punishment.ActionType;
-import me.catcoder.custombans.utility.ConfigUtility;
+import me.catcoder.custombans.utility.FileUtility;
 
 import java.io.File;
 
@@ -40,7 +39,7 @@ public class BukkitLimiter implements Limiter {
 
     @Override
     public void reload() {
-        this.limitConfig = ConfigUtility.get(customBans.getConfigurationLoader(), new File(customBans.getWorkingDirectory(), "limits.yml"));
+        this.limitConfig = FileUtility.get(customBans.getConfigurationLoader(), new File(customBans.getWorkingDirectory(), "limits.yml"));
     }
 
 

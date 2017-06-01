@@ -1,2 +1,7 @@
+language: en_US
 mysql:
   enabled: false
+  host: 'example.com'
+  user: 'minecraft'
+  password: 'minecraft'
+  database: 'custombans'

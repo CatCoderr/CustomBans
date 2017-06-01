@@ -3,9 +3,7 @@ package me.catcoder.custombans;
 import com.sk89q.CommandLocals;
 import com.sk89q.CommandsManager;
 import com.sk89q.SimpleInjector;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Builder;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.commands.BanCommands;
@@ -18,12 +16,13 @@ import me.catcoder.custombans.language.Language;
 import me.catcoder.custombans.limit.Limiter;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.storage.PunishmentStorage;
-import me.catcoder.custombans.utility.ConfigUtility;
+import me.catcoder.custombans.utility.FileUtility;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -37,6 +36,14 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author CatCoder
  */
 public class CustomBans {
+
+    /**
+     * Supported languages.
+     */
+    public static final String[] SUPPORTED_LANGUAGES = new String[]{
+            "en_US", //English
+            "ru_RU" //Russian
+    };
 
     /**
      * Plugin instance.
@@ -84,7 +91,7 @@ public class CustomBans {
      * Language file.
      */
     @Getter
-    private final Language language;
+    private Language language;
     /**
      * The main plugin configuration (config.yml).
      */
@@ -146,10 +153,10 @@ public class CustomBans {
         this.reloader = reloader;
 
         this.workingDirectory = workingDirectory;
-        //Load 'config.yml file
-        this.pluginConfiguration = ConfigUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
+        //Load 'config.yml' file
+        this.pluginConfiguration = FileUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
         //Load language
-        this.language = new Language(new File(workingDirectory, "language.yml"), this);
+        this.reloadLanguage();
         this.database = setupDatabase();
 
         this.storage = new PunishmentStorage(database, this);
@@ -171,23 +178,23 @@ public class CustomBans {
             }
         };
         this.registerCommands();
-
-        //Inform user.
-        logger.log(Level.INFO, "CustomBans (ALPHA) [{0}] enabled.", platform);
     }
 
     /**
      * Setting up {@link AbstractDatabase}
      *
      * @return - configured {@link AbstractDatabase}
-     * @throws UnsupportedOperationException - platform exceptions.
-     * @throws SQLException                  - if queries to database is not valid.
+     * @throws SQLException - if queries to database is not valid.
      */
-    private AbstractDatabase setupDatabase() throws UnsupportedOperationException, SQLException {
+    private AbstractDatabase setupDatabase() throws SQLException {
         boolean mysql = pluginConfiguration.getBoolean("mysql.enabled");
         AbstractDatabase data;
-        if (!mysql && platform == Platform.BUNGEE)
-            throw new UnsupportedOperationException("SQLite not supported for BungeeCord platform.");
+        if (!mysql && platform == Platform.BUNGEE) {
+            logger.warning("SQLite database not supported for BungeeCord platform. Using mysql...");
+            pluginConfiguration.set("mysql.enabled", true);
+            FileUtility.save(configurationLoader, pluginConfiguration);
+            mysql = true;
+        }
         if (mysql) {
             Configuration mysqlSection = pluginConfiguration.getSection("mysql");
             data = DatabaseBuilder.useMySql()
@@ -218,10 +225,44 @@ public class CustomBans {
     }
 
     /**
+     * Copy all languages files and select specified language.
+     *
+     * @return specified {@link Language}
+     */
+    private Language getLanguageInput() throws IOException {
+        File target = new File(workingDirectory, "languages");
+        target.mkdir(); //Make sure is folder created.
+        for (String language : SUPPORTED_LANGUAGES) {
+            File file = new File(target, language.concat(".yml"));
+            if (!file.exists())
+                FileUtility.copy(getClass().getClassLoader().getResourceAsStream("languages/" + file.getName()), file.toPath());
+        }
+        //Language in config
+        String language = pluginConfiguration.getString("language").concat(".yml");
+        File[] contents = target.listFiles();
+        assert contents != null;
+        File localeFile = Arrays.stream(contents)
+                .filter(file -> file.getName().equals(language))
+                .findFirst()
+                .orElse(null);
+        if (localeFile == null) localeFile = new File(target, "en_US.yml");
+
+        return new Language(localeFile, this);
+    }
+
+    /**
+     * Public method to reload language.
+     */
+    public void reloadLanguage() throws IOException {
+        this.language = getLanguageInput();
+        this.logger.log(Level.INFO, "Using language: {0}", language);
+    }
+
+    /**
      * Reload the main plugin config.
      */
     public void reloadPluginConfiguration() {
-        this.pluginConfiguration = ConfigUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
+        this.pluginConfiguration = FileUtility.get(configurationLoader, new File(workingDirectory, "config.yml"));
     }
 
 

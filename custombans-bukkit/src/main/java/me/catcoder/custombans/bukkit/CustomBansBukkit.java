@@ -10,6 +10,7 @@ import me.catcoder.custombans.bukkit.command.CommandsManagerRegistration;
 import me.catcoder.custombans.commands.BanCommands;
 import me.catcoder.custombans.commands.MuteCommands;
 import me.catcoder.custombans.commands.PluginCommands;
+import me.catcoder.custombans.language.MessageFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,7 +40,8 @@ public class CustomBansBukkit extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-            Preconditions.checkState(getDataFolder().mkdir(), "Cannot create directory.");
+            //Create plugins/CustomBans folder
+            getDataFolder().mkdir();
             //Implementing API.
             customBans = CustomBans.builder()
                     .logger(getLogger())
@@ -84,7 +86,7 @@ public class CustomBansBukkit extends JavaPlugin {
         try {
             customBans.getCommandExecutor().execute(command.getName(), args, actor, actor);
         } catch (CommandPermissionsException e) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission.");
+            sender.sendMessage(MessageFormatter.create().format("errors.no_permissions"));
         } catch (MissingNestedCommandException e) {
             sender.sendMessage(ChatColor.RED + e.getUsage());
         } catch (CommandUsageException e) {
@@ -92,13 +94,12 @@ public class CustomBansBukkit extends JavaPlugin {
             sender.sendMessage(ChatColor.RED + e.getUsage());
         } catch (WrappedCommandException e) {
             if (e.getCause() instanceof NumberFormatException) {
-                sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
+                sender.sendMessage(MessageFormatter.create().format("errors.invalid_number_format"));
             } else {
                 sender.sendMessage(ChatColor.RED + "An error has occurred. See console.");
                 e.printStackTrace();
             }
         } catch (CommandException e) {
-            e.printStackTrace();
             sender.sendMessage(ChatColor.RED + e.getMessage());
         }
         return true;
@@ -123,7 +124,7 @@ public class CustomBansBukkit extends JavaPlugin {
                 break;
             case LANGUAGE:
                 try {
-                    customBans.getLanguage().reload();
+                    customBans.reloadLanguage();
                 } catch (IOException e) {
                     getLogger().log(Level.WARNING, "Cannot reload language file.", e);
                 }

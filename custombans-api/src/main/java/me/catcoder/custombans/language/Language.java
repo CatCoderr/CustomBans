@@ -2,7 +2,7 @@ package me.catcoder.custombans.language;
 
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.config.Configuration;
-import me.catcoder.custombans.utility.ConfigUtility;
+import me.catcoder.custombans.utility.FileUtility;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,17 +18,11 @@ public class Language {
     public static final Pattern PLACEHOLDER_MATCH = Pattern.compile("\\{([^\\}]+)\\}");
 
     private Configuration configuration;
-    private final CustomBans plugin;
-    private final File file;
+    private String fileName;
 
     public Language(File file, CustomBans plugin) throws IOException {
-        this.file = file;
-        this.configuration = ConfigUtility.get(plugin.getConfigurationLoader(), file);
-        this.plugin = plugin;
-    }
-
-    public void reload() throws IOException {
-        this.configuration = plugin.getConfigurationLoader().load(file);
+        this.fileName = file.getName().replace(".yml", "");
+        this.configuration = FileUtility.get(plugin.getConfigurationLoader(), file);
     }
 
     public String translate(String path, Map<String, String> variables) {
@@ -46,6 +40,12 @@ public class Language {
                 matcher.appendReplacement(output, Matcher.quoteReplacement(replacement));
             }
         }
+        matcher.appendTail(output);
         return output.toString();
+    }
+
+    @Override
+    public String toString() {
+        return fileName;
     }
 }

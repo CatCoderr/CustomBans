@@ -23,7 +23,6 @@ public class BukkitBanManager implements BanManager {
 
     @Override
     public void ban(Actor target, Actor banner, String reason, PunishParameters parameters) {
-        banner.printMessage("Banned");
         customBans.getStorage().add(new Ban(reason, target.getName(), banner.getName(), null));
     }
 
@@ -54,12 +53,12 @@ public class BukkitBanManager implements BanManager {
 
     @Override
     public Mute getMute(Actor target) {
-        return customBans.getStorage().getMutes().get(target.getName());
+        return customBans.getStorage().getMutes().get(target.getName().toLowerCase());
     }
 
     @Override
     public Ban getBan(Actor target) {
-        return customBans.getStorage().getBans().get(target.getName());
+        return customBans.getStorage().getBans().get(target.getName().toLowerCase());
     }
 
     @Override

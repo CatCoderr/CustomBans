@@ -7,6 +7,7 @@ import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.limit.LimitInfo;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.punishment.PunishParameters;
+import me.catcoder.custombans.utility.ParameterKeys;
 import me.catcoder.custombans.utility.TimeUtility;
 
 import java.util.Date;
@@ -94,5 +95,34 @@ public class MuteCommands {
             builder.append(SILENT, true);
         }
         plugin.getBanManager().tempmute(target, actor, reason, System.currentTimeMillis() + time, builder.build());
+    }
+
+    @Command(
+            aliases = {"unmute", "cunmute"},
+            usage = "[player]",
+            flags = "s",
+            desc = "Umute player",
+            min = 1
+    )
+    @CommandPermissions("custombans.unmute")
+    public void unban(CommandContext args, Actor actor) throws CommandException {
+        Actor target = plugin.getActor(args.getString(0));
+
+        if (target.getBan() == null) throw new CommandException(MessageFormatter.create()
+                .addVariable("name", target.getName())
+                .format("errors.mute_not_found"));
+
+        if (target.getBan().hasParameter(ParameterKeys.CONSOLE_ACTION)
+                && !target.hasPermission("custombans.mute.console"))
+            throw new CommandException(MessageFormatter.create()
+                    .format("errors.console_mutted"));
+
+        PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
+
+        if (args.hasFlag('s')) {
+            builder.append(ParameterKeys.SILENT, true);
+        }
+
+        plugin.getBanManager().unban(target, builder.build());
     }
 }

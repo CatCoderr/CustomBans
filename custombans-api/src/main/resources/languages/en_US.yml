@@ -1,0 +1,2 @@
+errors:
+  ban_not_found: 'Ban of player {name} is not found.'

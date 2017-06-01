@@ -8,8 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.UUID;
-
 /**
  * @author CatCoder
  */
@@ -17,6 +15,7 @@ public class ConsoleActor implements Actor {
 
 
     private static final CommandSender CONSOLE = Bukkit.getConsoleSender();
+
     public static final ConsoleActor INSTANCE = new ConsoleActor();
     public static final LimitInfo GOD = new LimitInfo() {
         @Override

@@ -1,5 +1,6 @@
+#Dont touch this file. -_-
 name: CustomBans
-version: 3.0
-author: CatCoder
+version: 3.0-ALPHA
+author: CatCoder@vk.com/catcoder
 main: me.catcoder.custombans.bukkit.CustomBansBukkit
 soft-depend: [PermissionsEx]
