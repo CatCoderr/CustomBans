@@ -5,13 +5,6 @@ package me.catcoder.custombans.punishment;
  */
 public enum ActionType {
 
-    BAN, TEMPBAN, MUTE, TEMPMUTE;
+    BAN, TEMPBAN, MUTE, TEMPMUTE, KICK;
 
-    public boolean isTemporary() {
-        return this == TEMPMUTE || this == TEMPBAN;
-    }
-
-    public boolean isPermament() {
-        return this == MUTE || this == BAN;
-    }
 }

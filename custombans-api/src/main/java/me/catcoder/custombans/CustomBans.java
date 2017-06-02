@@ -6,7 +6,10 @@ import com.sk89q.SimpleInjector;
 import lombok.Getter;
 import lombok.experimental.Builder;
 import me.catcoder.custombans.actor.Actor;
+import me.catcoder.custombans.api.BanManager;
+import me.catcoder.custombans.api.CustomAPI;
 import me.catcoder.custombans.commands.BanCommands;
+import me.catcoder.custombans.commands.KickCommand;
 import me.catcoder.custombans.commands.MuteCommands;
 import me.catcoder.custombans.commands.PluginCommands;
 import me.catcoder.custombans.config.Configuration;
@@ -20,7 +23,6 @@ import me.catcoder.custombans.utility.FileUtility;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -41,7 +43,6 @@ public class CustomBans {
      * Supported languages.
      */
     public static final String[] SUPPORTED_LANGUAGES = new String[]{
-            "en_US", //English
             "ru_RU" //Russian
     };
 
@@ -50,6 +51,12 @@ public class CustomBans {
      */
     @Getter
     private static CustomBans instance;
+
+    /**
+     * API
+     */
+    @Getter
+    private static CustomAPI api;
     /**
      * Manager for bans/mutes manipulation.
      */
@@ -144,7 +151,7 @@ public class CustomBans {
         checkArgument(instance == null, "Instance already set.");
         checkArgument(workingDirectory.isDirectory(), "File %s is not a directory.", workingDirectory);
         //Set plugin instance
-        instance = this;
+        setInstance(this);
 
         this.logger = logger;
         this.platform = platform;
@@ -178,6 +185,9 @@ public class CustomBans {
             }
         };
         this.registerCommands();
+
+        //Initialize API
+        api = new InternalAPI(this);
     }
 
     /**
@@ -221,6 +231,7 @@ public class CustomBans {
         commandExecutor.register(PluginCommands.class); /** /custombans, /cb */
         commandExecutor.register(BanCommands.class); /** /ban, /unban, /tempban */
         commandExecutor.register(MuteCommands.class); /** /mute, /unmute, /tempmute */
+        commandExecutor.register(KickCommand.class); /** /kick */
 
     }
 
@@ -286,7 +297,6 @@ public class CustomBans {
     /**
      * Setters
      */
-
     public void setBanManager(BanManager banManager) {
         checkArgument(this.banManager == null);
         this.banManager = banManager;
@@ -296,4 +306,9 @@ public class CustomBans {
         checkArgument(this.limiter == null);
         this.limiter = limiter;
     }
+
+    public static void setInstance(CustomBans instance) {
+        CustomBans.instance = instance;
+    }
+
 }

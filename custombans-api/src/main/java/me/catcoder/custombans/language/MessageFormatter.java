@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import me.catcoder.custombans.CustomBans;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +23,10 @@ public class MessageFormatter {
 
     public String format(String path) {
         return CustomBans.getInstance().getLanguage().translate(path, variables);
+    }
+
+    public List<String> formatList(String path) {
+        return CustomBans.getInstance().getLanguage().formatList(path, variables);
     }
 
     public static MessageFormatter create() {

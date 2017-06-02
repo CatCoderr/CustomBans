@@ -1,0 +1,47 @@
+no_reason: 'Не указана'
+silent_prefix: '[Silent] '
+errors:
+  ban_not_found: 'Бан игрока {name} не найден.'
+  mute_not_found: 'Мут игрока {name} не найден.'
+  console_banned: 'Этого игрока может разбанить только с консоли.'
+  console_muted: 'Мут этого игрока можно удалить только с консоли.'
+  target_offline: 'Игрок оффлайн.'
+  no_permissions: 'У Вас недостаточно прав.'
+  invalid_number_format: 'Вы неправильно ввели число!'
+  already_banned: 'Игрок уже забанен.'
+  already_muted: 'У игрока уже есть мут.'
+  already_temp_banned: 'Игрок уже временно забанен.'
+  already_temp_muted: 'У игрока уже есть временный мут.'
+
+limit:
+  restricted_target_ban: 'Вы не можете забанить игрока {target}.'
+  restricted_target_mute: 'Вы не можете выдать мут игроку {target}.'
+  restricted_target_tempban: 'Вы не можете забанить на время игрока {target}.'
+  restricted_target_tempmute: 'Вы не можете выдать мут на время игроку {target}.'
+
+  restricted_time: 'Вы превысили количество времени. Ваше время: {allowed}'
+  restricted_target_kick: 'Вы не можете кикнуть игрока {target}.'
+
+announcement:
+  player_banned: '&a{banner} &fзабанил игрока &a{name}&f. Причина: &a{reason}'
+  player_muted: '&a{banner} &fвыдал мут игроку &a{name}&f. Причина: &a{reason}'
+  player_kicked: '&a{kicker} &fкикнул игрока &a{name}&f. Причина: &a{reason}'
+  player_temp_banned: '&a{banner} &fзабанил игрока &a{name}&f на &a{time}&f. Причина: &a{reason}'
+  player_temp_muted: '&a{banner} &fвыдал мут игроку на &a{time}&f. Причина: &a{reason}'
+  player_unbanned: '&a{admin} &fразбанил игрока &a{name}'
+  player_unmuted: '&a{admin} &fзабрал мут у игрока &a{name}.'
+
+formats:
+  ban_format:
+  - '&c&lВы были забанены!'
+  - 'Забанил: &a{banner}'
+  - 'Причина: &a{reason}'
+  mute_format:
+  - 'Вам был выдан мут игроком &a{banner}&f. Причина: &a{reason}'
+  tempban_format:
+  - '&c&lВы были временно забанены!'
+  - 'Забанил: &a{banner}'
+  - 'Причина: &a{reason}'
+  - 'Осталось: &a{until}'
+  tempmute_format:
+  - 'Вам был выдан временный мут игроком &a{banner}&f. Причина: &a{reason}&f. Осталось: &a{until}'

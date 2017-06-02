@@ -2,6 +2,7 @@ package me.catcoder.custombans.punishment;
 
 import me.catcoder.custombans.database.AbstractDatabase;
 import me.catcoder.custombans.language.MessageFormatter;
+import me.catcoder.custombans.utility.StringUtil;
 import me.catcoder.custombans.utility.TimeUtility;
 
 import java.util.UUID;
@@ -30,11 +31,11 @@ public class TempMute extends Mute implements Temporary {
 
     @Override
     public String getMessage() {
-        return MessageFormatter.create()
+        return StringUtil.joinString(MessageFormatter.create()
                 .addVariable("banner", getBanner())
                 .addVariable("reason", getReason())
-                .addVariable("unit", TimeUtility.timeUntilNow(getExpires()))
-                .format("formats.tempmute_format");
+                .addVariable("until", TimeUtility.timeUntilNow(getExpires()))
+                .formatList("formats.tempmute_format"), "\n", 0);
     }
 
 

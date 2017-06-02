@@ -1,4 +1,4 @@
-package me.catcoder.custombans;
+package me.catcoder.custombans.api;
 
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.punishment.*;
@@ -18,7 +18,7 @@ public interface BanManager {
      * @param target     - target player.
      * @param banner     - banner.
      * @param reason     - ban reason.
-     * @param parameters - additional parameters (can be null).
+     * @param parameters - parameters
      */
     void ban(Actor target, Actor banner, String reason, PunishParameters parameters);
 
@@ -28,7 +28,7 @@ public interface BanManager {
      * @param target     - target player.
      * @param banner     - banner.
      * @param reason     - ban reason.
-     * @param parameters - additional parameters (can be null).
+     * @param parameters - parameters
      * @param time       - expires.
      */
     void tempban(Actor target, Actor banner, String reason, long time, PunishParameters parameters);
@@ -37,7 +37,7 @@ public interface BanManager {
      * Unbans player.
      *
      * @param actor      - target player.
-     * @param parameters - additional parameters (can be null).
+     * @param parameters - parameters
      */
     void unban(Actor actor, PunishParameters parameters);
 
@@ -57,7 +57,7 @@ public interface BanManager {
      * @param target     - target player.
      * @param banner     - banner.
      * @param reason     - mute reason.
-     * @param parameters - additional parameters (can be null).
+     * @param parameters - parameters
      * @param time       - expires.
      */
     void tempmute(Actor target, Actor banner, String reason, long time, PunishParameters parameters);
@@ -66,9 +66,18 @@ public interface BanManager {
      * Unmutes player.
      *
      * @param actor      - target player.
-     * @param parameters - additional parameters (can be null).
+     * @param parameters - parameters
      */
     void unmute(Actor actor, PunishParameters parameters);
+
+    /**
+     * Kicks player
+     *
+     * @param actor      - target player
+     * @param reason     - kick reason
+     * @param parameters - parameters
+     */
+    void kick(Actor actor, String reason, PunishParameters parameters);
 
     /**
      * Get player mute if present.
@@ -106,14 +115,5 @@ public interface BanManager {
      * @return collection of {@link Mute}
      */
     Collection<Mute> getMutes();
-
-    /**
-     * Universal operation to clear player punishment. (database operation)
-     *
-     * @param type   - type
-     * @param target - player
-     * @return true if operation complete or false if failed.
-     */
-    boolean clear(ActionType type, Actor target);
 
 }

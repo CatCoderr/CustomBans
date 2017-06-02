@@ -1,11 +1,13 @@
 allprojects {
     group = 'me.catcoder.custombans'
-    version = '1.0-SNAPSHOT'
+    version = '3.0-ALPHA'
 }
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
+
+    compileJava.options.encoding = 'UTF-8'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -29,7 +31,7 @@ subprojects {
 
 task allJar(type: Jar, dependsOn: subprojects.tasks["build"] ) {
     subprojects.each { subproject ->
-        baseName = "CustomBans"
+        baseName = "CustomBans-" + project.version
         from subproject.configurations.archives.allArtifacts.files.collect {
             zipTree(it)
         }

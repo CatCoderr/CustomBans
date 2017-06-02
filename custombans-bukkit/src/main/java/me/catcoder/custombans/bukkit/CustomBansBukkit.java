@@ -1,6 +1,5 @@
 package me.catcoder.custombans.bukkit;
 
-import com.google.common.base.Preconditions;
 import com.sk89q.*;
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.Platform;
@@ -8,6 +7,7 @@ import me.catcoder.custombans.ReloadIntent;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.bukkit.command.CommandsManagerRegistration;
 import me.catcoder.custombans.commands.BanCommands;
+import me.catcoder.custombans.commands.KickCommand;
 import me.catcoder.custombans.commands.MuteCommands;
 import me.catcoder.custombans.commands.PluginCommands;
 import me.catcoder.custombans.language.MessageFormatter;
@@ -42,7 +42,7 @@ public class CustomBansBukkit extends JavaPlugin {
         try {
             //Create plugins/CustomBans folder
             getDataFolder().mkdir();
-            //Implementing API.
+            //Implementing core.
             customBans = CustomBans.builder()
                     .logger(getLogger())
                     .platform(Platform.BUKKIT)
@@ -59,6 +59,8 @@ public class CustomBansBukkit extends JavaPlugin {
             //Registering commands to Bukkit command map
             this.commands = new CommandsManagerRegistration(this, customBans.getCommandExecutor());
             this.registerCommands();
+            //Register events listener
+            this.getServer().getPluginManager().registerEvents(new BukkitListener(customBans), this);
         } catch (IOException | SQLException e) {
             getLogger().log(Level.SEVERE, "Cannot setting up CustomBans.", e);
         }
@@ -68,6 +70,8 @@ public class CustomBansBukkit extends JavaPlugin {
     public void onDisable() {
         //Unregister commands.
         commands.unregisterCommands();
+        //Nulling instance
+        CustomBans.setInstance(null);
     }
 
     /**
@@ -109,6 +113,7 @@ public class CustomBansBukkit extends JavaPlugin {
         commands.register(PluginCommands.class);
         commands.register(BanCommands.class);
         commands.register(MuteCommands.class);
+        commands.register(KickCommand.class);
     }
 
 

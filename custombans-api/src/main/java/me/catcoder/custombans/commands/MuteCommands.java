@@ -29,14 +29,18 @@ public class MuteCommands {
     @Command(aliases = {"mute", "cmute"},
             usage = "[player] [reason]",
             flags = "cs",
-            desc = "Mutes player permanently.",
+            desc = "Выдать мут игроку пермаментно.",
             min = 1)
     @LimitedCommand(type = ActionType.MUTE)
     @CommandPermissions("custombans.mute")
     public void mute(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
         Actor target = plugin.getActor(args.getString(0));
-        String reason = MessageFormatter.create().format("errors.no_reason");
+        if (target.getMute() != null) throw new CommandException(MessageFormatter.create()
+                .addVariable("name", target.getName())
+                .format("errors.already_muted"));
+
+        String reason = MessageFormatter.create().format("no_reason");
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
 
         if (args.argsLength() > 1) {
@@ -61,16 +65,19 @@ public class MuteCommands {
             aliases = {"tempmute", "ctempmute"},
             usage = "[player] [time] [reason]",
             flags = "cs",
-            desc = "Temporary mutes player.",
+            desc = "Выдать мут на время игроку.",
             min = 2
     )
     @LimitedCommand(type = ActionType.TEMPMUTE)
     @CommandPermissions("custombans.tempmute")
-    public void tempban(CommandContext args, Actor actor) throws CommandException {
+    public void tempmute(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
 
         Actor target = plugin.getActor(args.getString(0));
-        String reason = MessageFormatter.create().format("messages.no_reason");
+        if (target.getMute() != null) throw new CommandException(MessageFormatter.create()
+                .addVariable("name", target.getName())
+                .format("errors.already_temp_muted"));
+        String reason = MessageFormatter.create().format("no_reason");
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
         long time = TimeUtility.parseTime(args);
 
@@ -94,35 +101,35 @@ public class MuteCommands {
         if (args.hasFlag('s')) {
             builder.append(SILENT, true);
         }
-        plugin.getBanManager().tempmute(target, actor, reason, System.currentTimeMillis() + time, builder.build());
+        plugin.getBanManager().tempmute(target, actor, reason, time, builder.build());
     }
 
     @Command(
             aliases = {"unmute", "cunmute"},
             usage = "[player]",
             flags = "s",
-            desc = "Umute player",
+            desc = "Забрать мут у игрока.",
             min = 1
     )
     @CommandPermissions("custombans.unmute")
-    public void unban(CommandContext args, Actor actor) throws CommandException {
+    public void unmute(CommandContext args, Actor actor) throws CommandException {
         Actor target = plugin.getActor(args.getString(0));
 
-        if (target.getBan() == null) throw new CommandException(MessageFormatter.create()
+        if (target.getMute() == null) throw new CommandException(MessageFormatter.create()
                 .addVariable("name", target.getName())
                 .format("errors.mute_not_found"));
 
-        if (target.getBan().hasParameter(ParameterKeys.CONSOLE_ACTION)
+        if (target.getMute().hasParameter(ParameterKeys.CONSOLE_ACTION)
                 && !target.hasPermission("custombans.mute.console"))
             throw new CommandException(MessageFormatter.create()
-                    .format("errors.console_mutted"));
+                    .format("errors.console_muted"));
 
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
 
         if (args.hasFlag('s')) {
             builder.append(ParameterKeys.SILENT, true);
         }
-
-        plugin.getBanManager().unban(target, builder.build());
+        builder.append(ParameterKeys.ACTOR, actor.getName());
+        plugin.getBanManager().unmute(target, builder.build());
     }
 }

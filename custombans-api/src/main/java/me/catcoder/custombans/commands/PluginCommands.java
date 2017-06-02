@@ -23,14 +23,14 @@ public class PluginCommands {
 
 
     @Command(aliases = {"custombans", "cb"},
-            desc = "Plugin info command."
+            desc = "Информация."
     )
     public void custombans(CommandContext args, Actor actor) {
         actor.printMessage("&7[&cCustomBans&7]: v&c%s &7by &6CatCoder", plugin.getVersion());
     }
 
     @Command(aliases = "cbreload",
-            desc = "Reload following plugin sections.",
+            desc = "Перезагрузка плагина.",
             flags = "pcml")
     @CommandPermissions("custombans.reload")
     public void reload(CommandContext args, Actor actor) {

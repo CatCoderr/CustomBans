@@ -52,12 +52,12 @@ public class PunishmentStorage {
 
     public void removeBan(String name) {
         bans.remove(name.toLowerCase());
-        database.execute("DELETE FROM `bans` WHERE uuid=?", name.toLowerCase());
+        database.execute("DELETE FROM `bans` WHERE name=?", name.toLowerCase());
     }
 
     public void removeMute(String name) {
         mutes.remove(name.toLowerCase());
-        database.execute("DELETE FROM `mutes` WHERE uuid=?", name.toLowerCase());
+        database.execute("DELETE FROM `mutes` WHERE name=?", name.toLowerCase());
     }
 
     /////////////////////////////////////////////////////

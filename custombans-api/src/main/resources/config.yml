@@ -1,4 +1,4 @@
-language: en_US
+language: ru_RU
 mysql:
   enabled: false
   host: 'example.com'

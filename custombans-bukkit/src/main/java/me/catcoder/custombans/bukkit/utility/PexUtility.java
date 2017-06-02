@@ -30,7 +30,7 @@ public class PexUtility {
 
 
     public static PermissionGroup getGroup(BukkitActor actor) {
-        PermissionUser user = PermissionsEx.getUser(actor.getPlayer());
+        PermissionUser user = PermissionsEx.getUser(actor.getName());
 
         try {
             return Iterables.getFirst(getGroups(user), null);

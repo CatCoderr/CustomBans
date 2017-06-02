@@ -2,7 +2,9 @@ package me.catcoder.custombans.punishment;
 
 import me.catcoder.custombans.database.AbstractDatabase;
 import me.catcoder.custombans.language.MessageFormatter;
+import me.catcoder.custombans.utility.StringUtil;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,10 +18,10 @@ public class Ban extends Punishment {
 
     @Override
     public String getMessage() {
-        return MessageFormatter.create()
+        return StringUtil.joinString(MessageFormatter.create()
                 .addVariable("banner", getBanner())
                 .addVariable("reason", getReason())
-                .format("formats.ban_format");
+                .formatList("formats.ban_format"), "\n", 0);
     }
 
     @Override

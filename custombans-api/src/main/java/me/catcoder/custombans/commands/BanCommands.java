@@ -30,7 +30,7 @@ public class BanCommands {
     @Command(aliases = {"ban", "cban"},
             usage = "[player] [reason]",
             flags = "cs",
-            desc = "Bans player permanently.",
+            desc = "Забанить игрока пермаментно.",
             min = 1)
     @LimitedCommand(type = ActionType.BAN)
     @CommandPermissions("custombans.ban")
@@ -38,7 +38,11 @@ public class BanCommands {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
 
         Actor target = plugin.getActor(args.getString(0));
-        String reason = MessageFormatter.create().format("messages.no_reason");
+        if (target.getBan() != null) throw new CommandException(MessageFormatter.create()
+                .addVariable("name", target.getName())
+                .format("errors.already_banned"));
+
+        String reason = MessageFormatter.create().format("no_reason");
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
 
         if (args.argsLength() > 1) {
@@ -63,7 +67,7 @@ public class BanCommands {
             aliases = {"tempban", "ctempban"},
             usage = "[player] [time] [reason]",
             flags = "cs",
-            desc = "Temporary bans player.",
+            desc = "Временно забанить игрока.",
             min = 2
     )
     @LimitedCommand(type = ActionType.TEMPBAN)
@@ -72,7 +76,11 @@ public class BanCommands {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
 
         Actor target = plugin.getActor(args.getString(0));
-        String reason = MessageFormatter.create().format("messages.no_reason");
+        if (target.getBan() != null) throw new CommandException(MessageFormatter.create()
+                .addVariable("name", target.getName())
+                .format("errors.already_temp_banned"));
+
+        String reason = MessageFormatter.create().format("no_reason");
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
         long time = TimeUtility.parseTime(args);
 
@@ -96,14 +104,14 @@ public class BanCommands {
         if (args.hasFlag('s')) {
             builder.append(SILENT, true);
         }
-        plugin.getBanManager().tempban(target, actor, reason, System.currentTimeMillis() + time, builder.build());
+        plugin.getBanManager().tempban(target, actor, reason, time, builder.build());
     }
 
     @Command(
             aliases = {"unban", "cunban"},
             usage = "[player]",
             flags = "s",
-            desc = "Unban player",
+            desc = "Разбанить игрока.",
             min = 1
     )
     @CommandPermissions("custombans.unban")
@@ -124,7 +132,7 @@ public class BanCommands {
         if (args.hasFlag('s')) {
             builder.append(ParameterKeys.SILENT, true);
         }
-
+        builder.append(ParameterKeys.ACTOR, actor.getName());
         plugin.getBanManager().unban(target, builder.build());
     }
 }

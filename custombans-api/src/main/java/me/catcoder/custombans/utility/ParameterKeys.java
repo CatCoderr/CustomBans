@@ -11,5 +11,6 @@ public final class ParameterKeys {
 
     public static final String CONSOLE_ACTION = "console_action";
     public static final String SILENT = "silent";
+    public static final String ACTOR = "actor";
 
 }
