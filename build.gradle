@@ -25,6 +25,7 @@ subprojects {
         compile "org.projectlombok:lombok:1.14.8"
         compile "mysql:mysql-connector-java:5.1.40"
         compile "org.xerial:sqlite-jdbc:3.7.2"
+        compile "junit:junit:4.12"
     }
 }
 
