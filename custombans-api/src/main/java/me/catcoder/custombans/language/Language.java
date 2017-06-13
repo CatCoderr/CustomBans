@@ -67,7 +67,7 @@ public class Language {
     }
 
     //Helpful method
-    public static String translateCodes(String input) {
+    private static String translateCodes(String input) {
         char[] b = input.toCharArray();
         for (int i = 0; i < b.length - 1; i++) {
             if (b[i] == '&' && ALL_CODES.indexOf(b[i + 1]) > -1) {
