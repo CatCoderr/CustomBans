@@ -16,7 +16,10 @@ import me.catcoder.custombans.config.Configuration;
 import me.catcoder.custombans.config.ConfigurationLoader;
 import me.catcoder.custombans.database.*;
 import me.catcoder.custombans.language.Language;
+import me.catcoder.custombans.limit.LimitInfo;
 import me.catcoder.custombans.limit.Limiter;
+import me.catcoder.custombans.limit.cooldown.Cooldown;
+import me.catcoder.custombans.limit.cooldown.CooldownedCommandException;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.storage.PunishmentStorage;
 import me.catcoder.custombans.utility.FileUtility;
@@ -177,11 +180,21 @@ public class CustomBans {
                 return player.hasPermission(permission);
             }
 
-            //CustomBans edit.
             @Override
             public void checkLimit(Actor player, ActionType type, CommandLocals locals) {
                 //Limit checking.
                 limiter.checkLimit(player, type, locals);
+            }
+
+            @Override
+            public void checkCooldown(Actor player, CommandLocals locals, ActionType type) throws CooldownedCommandException {
+                limiter.checkCooldown(player, locals, type);
+
+                Cooldown cooldown = locals.get(Cooldown.class);
+
+                if (cooldown != null) {
+                    throw new CooldownedCommandException(cooldown);
+                }
             }
         };
         this.registerCommands();
@@ -217,6 +230,7 @@ public class CustomBans {
             data = DatabaseBuilder.useSqLite().file(new File(workingDirectory, "bans.db")).create();
         }
         DatabaseHelper.setup(data);
+
         return data;
     }
 

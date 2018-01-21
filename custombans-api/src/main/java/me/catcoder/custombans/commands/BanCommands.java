@@ -5,6 +5,7 @@ import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.limit.LimitInfo;
+import me.catcoder.custombans.limit.cooldown.Cooldowned;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.punishment.PunishParameters;
 import me.catcoder.custombans.utility.ParameterKeys;
@@ -33,14 +34,24 @@ public class BanCommands {
             desc = "Забанить игрока пермаментно.",
             min = 1)
     @LimitedCommand(type = ActionType.BAN)
+    @Cooldowned(type = ActionType.BAN)
     @CommandPermissions("custombans.ban")
     public void ban(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
 
         Actor target = plugin.getActor(args.getString(0));
-        if (target.getBan() != null) throw new CommandException(MessageFormatter.create()
-                .addVariable("name", target.getName())
-                .format("errors.already_banned"));
+
+        if (!target.isOnline() && !actor.hasPermission("custombans.ban.online")) {
+            throw new CommandException(MessageFormatter.create()
+                    .addVariable("name", target.getName())
+                    .format("limit.restricted_target_ban_online"));
+        }
+
+        if (target.getBan() != null) {
+            throw new CommandException(MessageFormatter.create()
+                    .addVariable("name", target.getName())
+                    .format("errors.already_banned"));
+        }
 
         String reason = MessageFormatter.create().format("no_reason");
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
@@ -71,11 +82,18 @@ public class BanCommands {
             min = 2
     )
     @LimitedCommand(type = ActionType.TEMPBAN)
+    @Cooldowned(type = ActionType.TEMPBAN)
     @CommandPermissions("custombans.tempban")
     public void tempban(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
 
         Actor target = plugin.getActor(args.getString(0));
+
+        if (!target.isOnline() && !actor.hasPermission("custombans.tempban.online")) {
+            throw new CommandException(MessageFormatter.create()
+                    .addVariable("name", target.getName())
+                    .format("limit.restricted_target_tempban_online"));
+        }
         if (target.getBan() != null) throw new CommandException(MessageFormatter.create()
                 .addVariable("name", target.getName())
                 .format("errors.already_temp_banned"));
@@ -95,7 +113,7 @@ public class BanCommands {
         }
         if (!info.canAccess(time)) {
             throw new CommandException(MessageFormatter.create()
-                    .addVariable("allowed", TimeUtility.getTime(new Date(TimeUnit.MINUTES.toMillis(info.getAllowedTime())), false))
+                    .addVariable("allowed", TimeUtility.getTime(new Date(TimeUnit.MINUTES.toMillis(info.getAllowedTime()))))
                     .format("limit.restricted_time"));
         }
         if (args.hasFlag('c')) {
@@ -114,6 +132,7 @@ public class BanCommands {
             desc = "Разбанить игрока.",
             min = 1
     )
+    @Cooldowned(type = ActionType.UNBAN)
     @CommandPermissions("custombans.unban")
     public void unban(CommandContext args, Actor actor) throws CommandException {
         Actor target = plugin.getActor(args.getString(0));

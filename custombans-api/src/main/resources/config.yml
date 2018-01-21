@@ -4,4 +4,9 @@ mysql:
   host: 'example.com'
   user: 'minecraft'
   password: 'minecraft'
-  database: 'custombans'
+  database: 'fbans'
+cooldowns:
+  default: 200 #сек
+priorities:
+  CatCoder: 228
+  Dummy: 10

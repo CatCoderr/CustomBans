@@ -5,6 +5,7 @@ import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.limit.LimitInfo;
+import me.catcoder.custombans.limit.cooldown.Cooldowned;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.punishment.PunishParameters;
 import me.catcoder.custombans.utility.ParameterKeys;
@@ -32,10 +33,18 @@ public class MuteCommands {
             desc = "Выдать мут игроку пермаментно.",
             min = 1)
     @LimitedCommand(type = ActionType.MUTE)
+    @Cooldowned(type = ActionType.MUTE)
     @CommandPermissions("custombans.mute")
     public void mute(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
         Actor target = plugin.getActor(args.getString(0));
+
+        if (!target.isOnline() && !actor.hasPermission("custombans.mute.online")) {
+            throw new CommandException(MessageFormatter.create()
+                    .addVariable("name", target.getName())
+                    .format("limit.restricted_target_mute_online"));
+        }
+
         if (target.getMute() != null) throw new CommandException(MessageFormatter.create()
                 .addVariable("name", target.getName())
                 .format("errors.already_muted"));
@@ -69,14 +78,23 @@ public class MuteCommands {
             min = 2
     )
     @LimitedCommand(type = ActionType.TEMPMUTE)
+    @Cooldowned(type = ActionType.TEMPMUTE)
     @CommandPermissions("custombans.tempmute")
     public void tempmute(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);
 
         Actor target = plugin.getActor(args.getString(0));
+
+        if (!target.isOnline() && !actor.hasPermission("custombans.tempmute.online")) {
+            throw new CommandException(MessageFormatter.create()
+                    .addVariable("name", target.getName())
+                    .format("limit.restricted_target_tempmute_online"));
+        }
+
         if (target.getMute() != null) throw new CommandException(MessageFormatter.create()
                 .addVariable("name", target.getName())
                 .format("errors.already_temp_muted"));
+
         String reason = MessageFormatter.create().format("no_reason");
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
         long time = TimeUtility.parseTime(args);
@@ -92,7 +110,7 @@ public class MuteCommands {
         }
         if (!info.canAccess(time)) {
             throw new CommandException(MessageFormatter.create()
-                    .addVariable("allowed", TimeUtility.getTime(new Date(info.getAllowedTime()), false))
+                    .addVariable("allowed", TimeUtility.getTime(new Date(info.getAllowedTime())))
                     .format("limit.restricted_time"));
         }
         if (args.hasFlag('c')) {
@@ -111,6 +129,7 @@ public class MuteCommands {
             desc = "Забрать мут у игрока.",
             min = 1
     )
+    @Cooldowned(type = ActionType.UNMUTE)
     @CommandPermissions("custombans.unmute")
     public void unmute(CommandContext args, Actor actor) throws CommandException {
         Actor target = plugin.getActor(args.getString(0));
@@ -119,10 +138,10 @@ public class MuteCommands {
                 .addVariable("name", target.getName())
                 .format("errors.mute_not_found"));
 
-        if (target.getMute().hasParameter(ParameterKeys.CONSOLE_ACTION)
-                && !target.hasPermission("custombans.mute.console"))
+        if (target.getMute().hasParameter(ParameterKeys.CONSOLE_ACTION) && !target.hasPermission("custombans.mute.console")) {
             throw new CommandException(MessageFormatter.create()
                     .format("errors.console_muted"));
+        }
 
         PunishParameters.PunishParametersBuilder builder = PunishParameters.builder();
 

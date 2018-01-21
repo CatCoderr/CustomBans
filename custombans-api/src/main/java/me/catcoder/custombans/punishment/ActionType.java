@@ -5,6 +5,6 @@ package me.catcoder.custombans.punishment;
  */
 public enum ActionType {
 
-    BAN, TEMPBAN, MUTE, TEMPMUTE, KICK;
+    BAN, TEMPBAN, MUTE, TEMPMUTE, KICK, UNMUTE, UNBAN
 
 }

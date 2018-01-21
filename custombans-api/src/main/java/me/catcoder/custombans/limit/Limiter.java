@@ -11,5 +11,9 @@ public interface Limiter {
 
     void checkLimit(Actor sender, ActionType type, CommandLocals locals);
 
+    void checkCooldown(Actor sender, CommandLocals locals, ActionType type);
+
+    int getCustomPriority(Actor actor);
+
     void reload();
 }

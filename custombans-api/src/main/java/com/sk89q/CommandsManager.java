@@ -20,6 +20,9 @@
 package com.sk89q;
 
 
+import me.catcoder.custombans.limit.cooldown.Cooldown;
+import me.catcoder.custombans.limit.cooldown.Cooldowned;
+import me.catcoder.custombans.limit.cooldown.CooldownedCommandException;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.utility.StringUtil;
 
@@ -517,12 +520,20 @@ public abstract class CommandsManager<T> {
                 LimitedCommand command = method.getAnnotation(LimitedCommand.class);
                 checkLimit(player, command.type(), context.getLocals());
             }
+            if (method.isAnnotationPresent(Cooldowned.class)) {
+                Cooldowned cooldowned = method.getAnnotation(Cooldowned.class);
+                checkCooldown(player, context.getLocals(), cooldowned.type());
+            }
 
             methodArgs[0] = context;
 
             Object instance = instances.get(method);
 
             invokeMethod(parent, args, player, method, instance, methodArgs, argsCount);
+
+            if (context.locals.containsKey(Runnable.class)) {
+                context.locals.get(Runnable.class).run();
+            }
         }
     }
 
@@ -580,6 +591,8 @@ public abstract class CommandsManager<T> {
     public abstract boolean hasPermission(T player, String permission);
 
     public abstract void checkLimit(T player, ActionType type, CommandLocals locals);
+
+    public abstract void checkCooldown(T player, CommandLocals locals, ActionType type) throws CooldownedCommandException;
 
     /**
      * Get the injector used to create new instances. This can be

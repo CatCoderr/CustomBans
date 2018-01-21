@@ -12,11 +12,16 @@ errors:
   already_muted: 'У игрока уже есть мут.'
   already_temp_banned: 'Игрок уже временно забанен.'
   already_temp_muted: 'У игрока уже есть временный мут.'
+  cooldown: 'Подождите еще {time} секунд перед использованием команды.'
 
 limit:
   restricted_target_ban: 'Вы не можете забанить игрока {target}.'
+  restricted_target_ban_online: 'Вы не можете забанить игрока {name}, так как он не онлайн.'
   restricted_target_mute: 'Вы не можете выдать мут игроку {target}.'
+  restricted_target_mute_online: 'Вы не можете выдать мут игроку {name}, так как он не онлайн.'
+  restricted_target_tempmute_online: 'Вы не можете выдать временный мут игроку {name}, так как он не онлайн.'
   restricted_target_tempban: 'Вы не можете забанить на время игрока {target}.'
+  restricted_target_tempban_online: 'Вы не можете временно забанить игрока {name}, так как он не онлайн.'
   restricted_target_tempmute: 'Вы не можете выдать мут на время игроку {target}.'
 
   restricted_time: 'Вы превысили количество времени. Ваше время: {allowed}'

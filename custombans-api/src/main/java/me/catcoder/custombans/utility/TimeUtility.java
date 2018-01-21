@@ -96,71 +96,67 @@ public final class TimeUtility {
     }
 
     public static String timeUnitNow(Date until) {
-        return getTime(new Date(new Date().getTime() - until.getTime()), false);
+        return getTime(new Date(new Date().getTime() - until.getTime()));
     }
 
-    public static String getTime(Date time, boolean dateIsPassed) {
-        String ret = "";
-        if (time.equals(new Date(0))) {
-            return "forever";
-        }
-        if (time.equals(new Date())) {
-            return "now";
-        }
-        long secondsBetween = (long) Math.ceil(((time.getTime()) / 1000));
-        if (secondsBetween < 0) {
-            secondsBetween *= -1L;
-            if (!dateIsPassed) {
-                ret += "-";
-            }
-        } else if (dateIsPassed) {
-            ret += "-";
-        }
-        double minus = 0;
-        if (secondsBetween >= YEARS_IN_SECONDS) {
-            minus = Math.floor(secondsBetween / YEARS_IN_SECONDS);
-            secondsBetween -= (long) minus * YEARS_IN_SECONDS;
-            ret += (int) minus + " years, ";
-        }
-        if (secondsBetween >= MONTHS_IN_SECONDS) {
-            minus = Math.floor(secondsBetween / MONTHS_IN_SECONDS);
-            secondsBetween -= (long) minus * MONTHS_IN_SECONDS;
-            ret += (int) minus + " months, ";
-        }
-        if (secondsBetween >= WEEKS_IN_SECONDS) {
-            minus = Math.floor(secondsBetween / WEEKS_IN_SECONDS);
-            secondsBetween -= (long) minus * WEEKS_IN_SECONDS;
-            ret += (int) minus + " weeks, ";
-        }
-        if (secondsBetween >= DAYS_IN_SECONDS) {
-            minus = Math.floor(secondsBetween / DAYS_IN_SECONDS);
-            secondsBetween -= (long) minus * DAYS_IN_SECONDS;
-            ret += (int) minus + " days, ";
-        }
-        if (secondsBetween >= HOURS_IN_SECONDS) {
-            minus = Math.floor(secondsBetween / HOURS_IN_SECONDS);
-            secondsBetween -= (long) minus * HOURS_IN_SECONDS;
-            ret += (int) minus + " hours, ";
-        }
-        if (secondsBetween >= MINUTES_IN_SECONDS) {
-            minus = Math.floor(secondsBetween / MINUTES_IN_SECONDS);
-            secondsBetween -= (long) minus * MINUTES_IN_SECONDS;
-            ret += (int) minus + " minutes, ";
-        }
-        if (ret.endsWith(", ")) {
-            ret = ret.substring(0, ret.length() - 2);
-        } else if (ret.length() == 0) {
-            ret = "Less than a minute";
-        }
-        return ret;
+    public static String getTime(Date time) {
+        return getTime(time.getTime());
     }
+
+    public static String getTime(long ms) {
+        ms = (long) Math.ceil(ms / 1000.0D);
+        StringBuilder sb = new StringBuilder(40);
+        if (ms / 31449600L > 0L) {
+            final long years = ms / 31449600L;
+            if (years > 100L) {
+                return "Never";
+            }
+            sb.append(String.valueOf(years) + " лет");
+            ms -= years * 31449600L;
+        }
+        if (ms / 2620800L > 0L) {
+            final long months = ms / 2620800L;
+            sb.append(String.valueOf(months) + " месяцев");
+            ms -= months * 2620800L;
+        }
+        if (ms / 604800L > 0L) {
+            final long weeks = ms / 604800L;
+            sb.append(String.valueOf(weeks) + " недель");
+            ms -= weeks * 604800L;
+        }
+        if (ms / 86400L > 0L) {
+            final long days = ms / 86400L;
+            sb.append(String.valueOf(days) + " дней");
+            ms -= days * 86400L;
+        }
+        if (ms / 3600L > 0L) {
+            final long hours = ms / 3600L;
+            sb.append(String.valueOf(hours + " часов"));
+            ms -= hours * 3600L;
+        }
+        if (ms / 60L > 0L) {
+            final long minutes = ms / 60L;
+            sb.append(String.valueOf(minutes) + " минут");
+            ms -= minutes * 60L;
+        }
+        if (ms > 0L) {
+            sb.append(String.valueOf(ms) + " секунд");
+        }
+        if (sb.length() > 1) {
+            sb.replace(sb.length() - 1, sb.length(), "");
+        } else {
+            sb = new StringBuilder("N/A");
+        }
+        return sb.toString();
+    }
+
 
     public static long parseTime(CommandContext context) throws CommandException {
-        if (context.argsLength() < 3) throw new CommandException("Time is not specified.");
+        if (context.argsLength() < 3) throw new CommandException("Время не указано.");
         int time = context.getInteger(1);
         TimeUnit unit = getFromModifier(context.getString(2));
 
-        if (unit == null) throw new CommandException("Unknown time modifier: " + context.getString(2));
+        if (unit == null) throw new CommandException("Неверный модификатор времени: " + context.getString(2));
 
         return unit.toMillis(time);
     }

@@ -59,7 +59,7 @@ public class BukkitBanManager implements BanManager {
                 .addVariable("banner", banner.getName())
                 .addVariable("name", target.getName())
                 .addVariable("reason", reason)
-                .addVariable("time", TimeUtility.getTime(new Date(time), false))
+                .addVariable("time", TimeUtility.getTime(new Date(time)))
                 .format("announcement.player_temp_banned"), parameters.hasParameter(ParameterKeys.SILENT));
         //Kick player if he is online
         if (target.isOnline()) {
@@ -107,7 +107,7 @@ public class BukkitBanManager implements BanManager {
                 .addVariable("banner", banner.getName())
                 .addVariable("name", target.getName())
                 .addVariable("reason", reason)
-                .addVariable("time", TimeUtility.getTime(new Date(time), false))
+                .addVariable("time", TimeUtility.getTime(new Date(time)))
                 .format("announcement.player_temp_muted"), parameters != null && parameters.hasParameter(ParameterKeys.SILENT));
     }
 

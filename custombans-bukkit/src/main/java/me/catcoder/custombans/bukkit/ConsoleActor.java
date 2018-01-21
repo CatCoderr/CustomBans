@@ -2,6 +2,7 @@ package me.catcoder.custombans.bukkit;
 
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.limit.LimitInfo;
+import me.catcoder.custombans.limit.cooldown.Cooldown;
 import me.catcoder.custombans.punishment.Ban;
 import me.catcoder.custombans.punishment.Mute;
 import org.bukkit.Bukkit;

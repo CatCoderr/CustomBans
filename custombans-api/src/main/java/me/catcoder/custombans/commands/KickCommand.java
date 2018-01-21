@@ -5,6 +5,7 @@ import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.actor.Actor;
 import me.catcoder.custombans.language.MessageFormatter;
 import me.catcoder.custombans.limit.LimitInfo;
+import me.catcoder.custombans.limit.cooldown.Cooldowned;
 import me.catcoder.custombans.punishment.ActionType;
 import me.catcoder.custombans.punishment.PunishParameters;
 
@@ -30,6 +31,7 @@ public class KickCommand {
             usage = "[player] [reason]"
     )
     @CommandPermissions("custombans.kick")
+    @Cooldowned(type = ActionType.KICK)
     @LimitedCommand(type = ActionType.KICK)
     public void kick(CommandContext args, Actor actor) throws CommandException {
         LimitInfo info = args.getLocals().get(LimitInfo.class);

@@ -32,7 +32,7 @@ subprojects {
 
 task allJar(type: Jar, dependsOn: subprojects.tasks["build"] ) {
     subprojects.each { subproject ->
-        baseName = "CustomBans-" + project.version
+        baseName = "CustomBans"
         from subproject.configurations.archives.allArtifacts.files.collect {
             zipTree(it)
         }
