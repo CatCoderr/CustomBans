@@ -7,6 +7,11 @@ import com.sk89q.CommandPermissions;
 import me.catcoder.custombans.CustomBans;
 import me.catcoder.custombans.ReloadIntent;
 import me.catcoder.custombans.actor.Actor;
+import me.catcoder.custombans.punishment.Ban;
+import me.catcoder.custombans.punishment.Mute;
+import me.catcoder.custombans.punishment.TempBan;
+import me.catcoder.custombans.punishment.TempMute;
+import me.catcoder.custombans.utility.TimeUtility;
 
 import java.util.List;
 
@@ -27,6 +32,37 @@ public class PluginCommands {
     )
     public void custombans(CommandContext args, Actor actor) {
         actor.printMessage("&7[&cCustomBans&7]: v&c%s &7by &6CatCoder", plugin.getVersion());
+    }
+
+    @Command(aliases = {"cinfo", "finfo"},
+            min = 1,
+            max = 1,
+            usage = "[player]",
+            desc = "Информация о игроке")
+    public void targetInfo(CommandContext args, Actor actor) {
+        Actor target = plugin.getActor(args.getString(0));
+
+        Ban ban = target.getBan();
+        Mute mute = target.getMute();
+
+        actor.printMessage("&6Информация о игроке: &a%s", target.getName() + "&6:");
+
+        actor.printMessage("&6Забанен: %s", (ban == null ? "&cнет" : "&aда"));
+        actor.printMessage("&6В муте: %s", (mute == null) ? "&cнет" : "&aда");
+        if (ban != null) {
+            actor.printMessage("   &6Причина: &a%s", ban.getReason());
+            actor.printMessage("   &6Забанил: &a%s", ban.getBanner());
+            if (ban instanceof TempBan) {
+                actor.printMessage("   &6Осталось: &a%s", TimeUtility.getTime(((TempBan) ban).getExpires() - System.currentTimeMillis()));
+            }
+        }
+        if (mute != null) {
+            actor.printMessage("   &6Причина: &a%s", mute.getReason());
+            actor.printMessage("   &6Выдал мут: &a%s", mute.getBanner());
+            if (mute instanceof TempMute) {
+                actor.printMessage("   &6Осталось: &a%s", TimeUtility.getTime(((TempMute) mute).getExpires() - System.currentTimeMillis()));
+            }
+        }
     }
 
     @Command(aliases = "cbreload",
