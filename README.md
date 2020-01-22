@@ -1,2 +1,2 @@
 # CustomBans
-Very useful plugin for punishment system to our Bukkit server.
+Punishment system for your Bukkit server with cross platform support.
